@@ -1,0 +1,3 @@
+(by oct 22) P02: State-of-the-Art Report
+(by oct 27) P03: Function Specs
+(after functional specs) Implement Task: Let the user visualize how a gene changes over time
