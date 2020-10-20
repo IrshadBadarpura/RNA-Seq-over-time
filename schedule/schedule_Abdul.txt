@@ -1,0 +1,4 @@
+1. Work on State of the Art Report with Christian.
+2. Meet with client.
+3. Create a part of functional specification document.
+4. Create some interfaces in the prototype.
