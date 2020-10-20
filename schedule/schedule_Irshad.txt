@@ -1,0 +1,4 @@
+(by oct 22) P02: Work on Data and task abstraction
+(by oct 27) P03: Work on Function Specs 
+(after functional specs): Work on interface design with Christian and Abdul
+Starting implementing the first task: Let user visualize each of the cell population in different colors
