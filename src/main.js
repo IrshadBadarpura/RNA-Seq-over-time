@@ -11,7 +11,7 @@ day1Data = loadData(dataset);
 function loadData(fileName){
     var url = "../data/" + fileName + ".csv";
 
-    var dataDict = {};
+    var dataArray = [];
 
     d3.csv(url, function(data) {
         var values = Object.values(data);
@@ -23,12 +23,14 @@ function loadData(fileName){
         var cellDict = {};
 
         for(var i = 1; i < genesNumber; i++){
-            cellDict[keys[i]] = values[i];
-        }
+            cellDict["cell"] = cellName;
+            cellDict["gene"] = keys[i];
+            cellDict["expession"] = values[i];
 
-        dataDict[cellName] = cellDict;
+            dataArray.push(cellDict)
+        }
     });
 
-    return dataDict;
+    return dataArray;
 }
 
