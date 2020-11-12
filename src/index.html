@@ -11,6 +11,7 @@
 
     <!-- external scripts -->
     <script src="../d3/d3.js" charset="utf-8"></script>
+    <script src="../d3/tsne.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- Scripts -->
@@ -18,8 +19,12 @@
 </head>
 <body>
     
-    <h1 class="head">First Build</h1>
-    <input id="ddlGenes">
+    <h1 class="head">RNA-Sequencing Over Time</h1>
+
+    <div class="selection">
+        <Label for="ddlGenes">Select a Gene</Label>
+        <input id="ddlGenes">
+    </div>
     
     <div id="plot1"></div>
     <div id="plot2"></div>
