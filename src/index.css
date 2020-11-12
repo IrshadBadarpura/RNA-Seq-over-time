@@ -1,0 +1,21 @@
+.head{
+    text-align: center;
+    color: #ec7d10;
+}
+
+#plot1{
+    display: inline;
+}
+
+#plot2{
+    display: inline;
+}
+
+#plot3{
+    display: inline;
+}
+
+#ddlGenes{
+    display: block;
+}
+
