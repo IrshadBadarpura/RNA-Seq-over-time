@@ -6,7 +6,7 @@ var day0Data, day1Data, day2Data, day3Data, day4Data, day5Data;
 loadData(day0Dataset, "ddlGenes");
 loadData(day1Dataset);
 loadData(day2Dataset);
-loadData_heatmap('Day0_100')
+loadData_heatmap('day0_100')
 // loadData(dataset);
 // loadData(dataset);
 // loadData(dataset);

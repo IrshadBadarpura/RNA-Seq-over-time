@@ -53,6 +53,9 @@ class Heatmap {
         .range(['#eff3ff', '#08519c'])
         .interpolate(d3.interpolateHcl); //interpolateHsl interpolateHcl interpolateRgb
 
+    var colorScale = d3.scaleSequential(d3.interpolateReds)
+                      .domain([d3.min(data, function(d){return d.expression}), d3.max(data, function(d){return d.expression})]);
+
     // Create the SVG canvas for the heatmap
     var svg = d3.select("body").append("svg")
       .attr("width", svgWidth)
