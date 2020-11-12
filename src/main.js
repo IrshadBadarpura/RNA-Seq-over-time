@@ -44,6 +44,8 @@ function loadData(fileName, ddlName = ""){
 
         if(ddlName != ""){
             createDropdown(ddlName, geneArray);
+            
+
         }  
     });
 }
@@ -52,6 +54,18 @@ function createDropdown(id, array){
     $( "#"+id ).autocomplete({
         source: array,
         select: function( event, ui ) {
+            var cluster1 = document.getElementById("plot1");
+            cluster1.querySelectorAll('*').forEach(n => n.remove());
+
+            var cluster2 = document.getElementById("plot2");
+            cluster2.querySelectorAll('*').forEach(n => n.remove());
+
+            var cluster3 = document.getElementById("plot3");
+            cluster3.querySelectorAll('*').forEach(n => n.remove());
+            
+            plot1(ui.item.value);
+            plot2(ui.item.value);
+            plot3(ui.item.value);
             console.log(ui.item.value);
         }
     });
