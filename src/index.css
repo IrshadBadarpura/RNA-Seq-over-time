@@ -1,21 +1,35 @@
 .head{
     text-align: center;
-    color: #ec7d10;
+    color: #f05454;
 }
 
 #plot1{
     display: inline;
+    margin-top: 5%;
 }
 
 #plot2{
     display: inline;
+    margin-top: 5%;
 }
 
 #plot3{
     display: inline;
+    margin-top: 10%;
 }
 
-#ddlGenes{
-    display: block;
+.font{
+    font-size: large;
 }
+
+.selection{
+    margin-left: 40%;
+    margin-top:5%;
+}
+
+/* #ddlGenes{
+    display: ;
+} */
+
+
 

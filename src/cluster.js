@@ -63,7 +63,16 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     // var val = "Sftpc";
     var selectGene = genes[val];
     // console.log(selectGene);
-    var colorBlueScale = d3.scaleSequential(d3.interpolateBlues).domain();
+
+    maxExpression = d3.max(dataArray, function(d){
+      return d[(genes[val])-2];
+    })
+
+    minExpression = d3.min(dataArray, function(d){
+      return d[(genes[val] - 2)];
+    })
+
+    var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
 
     svg.selectAll("dot")
       .data(Y)
@@ -72,7 +81,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
       .attr("r", 5)
       .attr("cx", function(d,i) { return x(Y[i][0]); })
       .attr("cy", function(d,i) { return y(Y[i][1]); })
-      .style('fill', function(d,i) { return colorBlueScale( Y[i][selectGene]); } )
+      .style('fill', function(d,i) { return colorScale( Y[i][selectGene]); } )
 
 });
 }
@@ -144,7 +153,16 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
 
 
     var selectGene = genes[val];
-    var colorBlueScale = d3.scaleSequential( d3.interpolateBlues).domain(dataArray[selectGene]);
+
+    maxExpression = d3.max(dataArray, function(d){
+      return d[(genes[val])-2];
+    })
+
+    minExpression = d3.min(dataArray, function(d){
+      return d[(genes[val] - 2)];
+    })
+
+    var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
 
     svg.selectAll("dot")
       .data(Y)
@@ -152,7 +170,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
       .attr("r", 5)
       .attr("cx", function(d,i) { return x(Y[i][0]); })
       .attr("cy", function(d,i) { return y(Y[i][1]); })
-      .style('fill', function(d,i) { return colorBlueScale( Y[i][selectGene]); } )
+      .style('fill', function(d,i) { return colorScale( Y[i][selectGene]); } )
 
   });
 }
@@ -225,7 +243,17 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     y.domain(d3.extent(Y, function(d,i) { return (Y[i][1]); }));
 
     var selectGene = genes[val]
-    var colorBlueScale = d3.scaleSequential( d3.interpolateBlues ).domain(dataArray[selectGene]);
+
+    maxExpression = d3.max(dataArray, function(d){
+      return d[(genes[val])-2];
+    })
+
+    minExpression = d3.min(dataArray, function(d){
+      return d[(genes[val] - 2)];
+    })
+
+    var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
+
 
     svg.selectAll("dot")
       .data(Y)
@@ -233,7 +261,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
       .attr("r", 5)
       .attr("cx", function(d,i) { return x(Y[i][0]); })
       .attr("cy", function(d,i) { return y(Y[i][1]); })
-      .style('fill', function(d,i) { return colorBlueScale( Y[i][selectGene]); } )
+      .style('fill', function(d,i) { return colorScale( Y[i][selectGene]); } )
 
   });
 }
