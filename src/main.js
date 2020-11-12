@@ -3,14 +3,14 @@ var day1Dataset = "Day1";
 var day2Dataset = "Day2";
 var day0Data, day1Data, day2Data, day3Data, day4Data, day5Data;
 
-loadData(day0Dataset);
+loadData(day0Dataset, "ddlGenes");
 loadData(day1Dataset);
 loadData(day2Dataset);
 // loadData(dataset);
 // loadData(dataset);
 // loadData(dataset);
 
-function loadData(fileName){
+function loadData(fileName, ddlName = ""){
     var url = "../data/" + fileName + ".csv";
 
     var dataArray = [];
@@ -42,19 +42,17 @@ function loadData(fileName){
             geneArray.push(geneName);
         }
 
-        createDropdown("ddlGenes", geneArray);
+        if(ddlName != ""){
+            createDropdown(ddlName, geneArray);
+        }  
     });
 }
 
 function createDropdown(id, array){
     $( "#"+id ).autocomplete({
-        source: array
+        source: array,
+        select: function( event, ui ) {
+            console.log(ui.item.value);
+        }
     });
 }
-
-$("#ddlGenes").autocomplete({
-    select: function( event, ui ) {
-        console.log(ui.item.value);
-    }
-  });
-
