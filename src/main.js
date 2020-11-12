@@ -6,6 +6,7 @@ var day0Data, day1Data, day2Data, day3Data, day4Data, day5Data;
 loadData(day0Dataset, "ddlGenes");
 loadData(day1Dataset);
 loadData(day2Dataset);
+loadData_heatmap('Day0_100')
 // loadData(dataset);
 // loadData(dataset);
 // loadData(dataset);
@@ -47,6 +48,44 @@ function loadData(fileName, ddlName = ""){
             
 
         }  
+    });
+}
+
+function loadData_heatmap(fileName){
+    var url = "../data/" + fileName + ".csv";
+
+    d3.csv(url).then(function(data) {
+
+        var dataArray = [];
+        var geneArray = [];
+        var cellArray = [];
+
+        for(var i = 0; i < 100/*data.length*/; i++){
+            var values = Object.values(data[i]);
+            var keys = Object.keys(data[i]);
+            var geneName = values[0];
+
+            var cellDict = {};
+
+            for(var j = 1; j < 100/*values.length*/; j++){
+                cellDict["gene"] = geneName;
+                cellDict["cell"] = keys[j];
+                cellDict["expression"] = parseFloat(values[j]);
+                
+                if(geneArray.length == 0){
+                    cellArray.push(keys[j]);
+                }
+
+                dataArray.push(cellDict);
+                cellDict = {};
+            }
+
+            geneArray.push(geneName);
+        }
+
+        console.log(dataArray);
+        var heatmap = new Heatmap(50,100,400,400, dataArray);
+
     });
 }
 

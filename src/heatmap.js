@@ -8,11 +8,22 @@ class Heatmap {
     svgWidth = svgWidth;
     svgHeight = svgHeight;
 
+
+    var tooltip = d3.select('body')
+              .append('div')
+              .style('position', 'absolute')
+              .style('padding', '0 10px')
+              .style('background', 'white')
+              .style('opacity', 0);
+
+
     var margin = 50;
 
     var uniqueCells = d3.map(data, function(d){return d.cell;}).keys();
     var uniqueGenes = d3.map(data, function(d){return d.gene;}).keys();
     var maxExpression = d3.max(data, function(d){return d.expression});
+
+
     //console.log('max exp:',maxExpression);
 
     //console.log('uniqueCells:', uniqueCells)
@@ -26,14 +37,19 @@ class Heatmap {
     var cellSet = [];
     var geneSet = [];
 
-    for (var i = 0; i < 15; i++) {
+    for (var i = 0; i < 13; i++) {
       cellSet.push(uniqueCells[i]);
       geneSet.push(uniqueGenes[i]);
     }
+    cellSet.push(uniqueCells[20]);
+    cellSet.push(uniqueCells[17]);
+    geneSet.push('Saa3');
+    geneSet.push('Ccl5');
+
 
     
     var colorScale = d3.scaleLinear()
-        .domain([0, maxExpression])
+        .domain([d3.min(data, function(d){return d.expression}), d3.max(data, function(d){return d.expression})])
         .range(['#eff3ff', '#08519c'])
         .interpolate(d3.interpolateHcl); //interpolateHsl interpolateHcl interpolateRgb
 
@@ -42,13 +58,14 @@ class Heatmap {
       .attr("width", svgWidth)
       .attr("height", svgHeight)
       .attr("id", "HeatMapSVG");
-
+    /*
     // Reposition  
     $("svg").css({
       top: this.offsetY,
       left: this.offsetX,
       position:'absolute'
     });
+    //*/
 
     var selfID = 77;
     // Border
@@ -113,6 +130,22 @@ class Heatmap {
         console.log('id: ',d3.select(this).attr('id'));
         console.log('class: ',d3.select(this).attr('class'));
         console.log('data: ', d);
+      })
+      .on('mouseover', function(d) {
+        var displayString = '<p style="font-size: 12;"><strong>'+`Expression: ${d.expression}`+'</strong><br>';
+        displayString += `Cell: ${d.cell}<br>Gene: ${d.gene}`
+        displayString += '</p>'
+        tooltip.html(displayString)
+        .style('opacity', .9)
+        .style('left', (d3.event.pageX +10) + 'px')
+        .style('top', (d3.event.pageY +10) + 'px')
+        .style('border', '1px solid black')
+        .raise();
+      })
+      .on('mouseout', function(d) {
+        tooltip.html('')
+        .style('border', '')
+        .style('opacity', 0)
       });
 
       svg.selectAll('.geneText')
