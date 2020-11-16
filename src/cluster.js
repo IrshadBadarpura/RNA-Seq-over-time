@@ -1,267 +1,79 @@
-function plot1(val){
+class Cluster {
+  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data) {
 
-d3.csv("../data/Day0_mod.csv")
-  .then(function(data){
+    var borderWidth = 0.2;
+    var borderColor = 'black';
+    var dotSize = 2;
+    /*
+    var margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = 460 - margin.left - margin.right,
+        height = 360 - margin.top - margin.bottom;*/
 
-    dataArray = new Array(500);
-    genes = {}
+    var x = d3.scaleLinear().range([0, svgHeight]);
+    var y = d3.scaleLinear().range([svgWidth, 0]);
+    
+    x.domain(d3.extent(data, function(d) { return (d.tsne[0]); }));
+    y.domain(d3.extent(data, function(d) { return (d.tsne[1]); }));
 
-    genesKeys = Object.keys(data[0]);
+    //=======================//
+    // Set up the SVG canvas //
+    //=======================//
 
-    for(var i = 1; i<500;i++){
-      genes[genesKeys[i]] = i+1
+    // Create the SVG canvas
+    var svg = d3.select("body").append("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .attr("id", `ClusterSVG${svgid}`);
+
+    // Reposition  
+    $(`#ClusterSVG${svgid}`).css({
+      top: offsetY,
+      left: offsetX,
+      position:'absolute'
+    });
+
+    // Border
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .style("stroke", borderColor)
+      .style("stroke-width", borderWidth)
+      .style("fill", 'none');
+
+    this._updateView = function(selectedGene) {
+      //==================//
+      // Draw the cluster //
+      //==================//
+
+      // Remove anything previously drawn
+      svg.selectAll('.dot').remove();
+
+      // Draw the new cluster
+      svg.selectAll("dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("class","dot")
+        .attr("r", dotSize)
+        .attr("cx", function(d) { return x(d.tsne[0]); })
+        .attr("cy", function(d) { return y(d.tsne[1]); })
+        .style('fill', function(d) { return colorScale(d[selectedGene]); } );
     }
 
-    for(var i = 0; i< 500;i++){
-      array = new Array(500);
-      keys = Object.entries(data[i]);
-      for(var j = 0; j<500;j++){
-        array[j] = parseFloat(keys[j+1][1]);
-      }
-      dataArray[i] = array
-    }
-
-var opt = {}
-opt.epsilon = 10; // epsilon is learning rate (10 = default)
-opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
-opt.dim = 2; // dimensionality of the embedding (2 = default)
-
-var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
-
-tsne.initDataDist(dataArray);
-
-for(var k = 0; k < 500; k++) {
-  tsne.step(); // every time you call this, solution gets better
-}
-
-var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
-
-
-for(var i = 0;i< dataArray.length;i++){
-  for(var j = 0; j<dataArray[i].length;j++){
-    Y[i].push(dataArray[i][j])
-  }
-}
-
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 460 - margin.left - margin.right,
-    height = 360 - margin.top - margin.bottom;
-    
- 		var x = d3.scaleLinear().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]);
-    
-    var svg = d3.select("#plot1").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-    
-    x.domain(d3.extent(Y, function(d,i) { return (Y[i][0]); }));
-    y.domain(d3.extent(Y, function(d,i) { return (Y[i][1]); }));
-
-    // var val = "Sftpc";
-    var selectGene = genes[val];
-    // console.log(selectGene);
-
-    maxExpression = d3.max(dataArray, function(d){
-      return d[(genes[val])-2];
-    })
-
-    minExpression = d3.min(dataArray, function(d){
-      return d[(genes[val] - 2)];
-    })
-
-    var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
-
+    // When no gene is selected, all dots show black
     svg.selectAll("dot")
-      .data(Y)
-      .enter().append("circle")
-      .attr("class","circle")
-      .attr("r", 5)
-      .attr("cx", function(d,i) { return x(Y[i][0]); })
-      .attr("cy", function(d,i) { return y(Y[i][1]); })
-      .style('fill', function(d,i) { return colorScale( Y[i][selectGene]); } )
-
-});
-}
-
-function plot2(val){
-  d3.csv("../data/Day1_mod.csv")
-  .then(function(data){
-
-    dataArray = new Array(500);
-
-    genes = {}
-
-    genesKeys = Object.keys(data[0]);
-
-    for(var i = 1; i<500;i++){
-      genes[genesKeys[i]] = i+1
-    }
-
-    for(var i = 0; i< 500;i++){
-      array = new Array(500);
-      keys = Object.entries(data[i]);
-      
-      for(var j = 0; j<500;j++){
-
-        array[j] = parseFloat(keys[j+1][1]);
-        
-      }
-
-      dataArray[i] = array
-    }
-
-var opt = {}
-opt.epsilon = 10; // epsilon is learning rate (10 = default)
-opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
-opt.dim = 2; // dimensionality of the embedding (2 = default)
-
-var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
-
-tsne.initDataDist(dataArray);
-
-for(var k = 0; k < 1000; k++) {
-  tsne.step(); // every time you call this, solution gets better
-}
-
-var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
-
-for(var i = 0;i< dataArray.length;i++){
-  for(var j = 0; j<dataArray[i].length;j++){
-    Y[i].push(dataArray[i][j])
+        .data(data)
+        .enter().append("circle")
+        .attr("class","dot")
+        .attr("r", dotSize)
+        .attr("cx", function(d) { return x(d.tsne[0]); })
+        .attr("cy", function(d) { return y(d.tsne[1]); })
+        .style('fill', 'black');
+    //this._updateView("Sftpc");
   }
-}
 
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 460 - margin.left - margin.right,
-    height = 360 - margin.top - margin.bottom;
-    
- 		var x = d3.scaleLinear().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]);
-    
-    var svg = d3.select("#plot2").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-    
-    x.domain(d3.extent(Y, function(d,i) { return (Y[i][0]); }));
-    y.domain(d3.extent(Y, function(d,i) { return (Y[i][1]); }));
-
-
-    var selectGene = genes[val];
-
-    maxExpression = d3.max(dataArray, function(d){
-      return d[(genes[val])-2];
-    })
-
-    minExpression = d3.min(dataArray, function(d){
-      return d[(genes[val] - 2)];
-    })
-
-    var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
-
-    svg.selectAll("dot")
-      .data(Y)
-    .enter().append("circle")
-      .attr("r", 5)
-      .attr("cx", function(d,i) { return x(Y[i][0]); })
-      .attr("cy", function(d,i) { return y(Y[i][1]); })
-      .style('fill', function(d,i) { return colorScale( Y[i][selectGene]); } )
-
-  });
-}
-
-function plot3(val){
-  d3.csv("../data/Day2_mod.csv")
-  .then(function(data){
-
-    dataArray = new Array(500);
-
-    genes = {}
-
-    genesKeys = Object.keys(data[0]);
-
-    for(var i = 1; i<500;i++){
-      genes[genesKeys[i]] = i+1
-    }
-
-    for(var i = 0; i< 500;i++){
-      array = new Array(500);
-      keys = Object.entries(data[i]);
-
-      for(var j = 0; j<500;j++){
-
-        array[j] = parseFloat(keys[j+1][1]);
-        
-      }
-
-      dataArray[i] = array
-    }
-
-var colorBlueScale = d3.scaleSequential( d3.interpolateReds ).domain(dataArray[2]);
-
-var opt = {}
-opt.epsilon = 10; // epsilon is learning rate (10 = default)
-opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
-opt.dim = 2; // dimensionality of the embedding (2 = default)
-
-var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
-
-tsne.initDataDist(dataArray);
-
-for(var k = 0; k < 1000; k++) {
-  tsne.step(); // every time you call this, solution gets better
-}
-
-var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
-
-for(var i = 0;i< dataArray.length;i++){
-  for(var j = 0; j<dataArray[i].length;j++){
-    Y[i].push(dataArray[i][j])
+  updateView(selectedGene) {
+    this._updateView(selectedGene);
   }
-}
-
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 460 - margin.left - margin.right,
-    height = 360 - margin.top - margin.bottom;
-    
- 		var x = d3.scaleLinear().range([0, width]);
-    var y = d3.scaleLinear().range([height, 0]);
-    
-    var svg = d3.select("#plot3").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-    
-    x.domain(d3.extent(Y, function(d,i) { return (Y[i][0]); }));
-    y.domain(d3.extent(Y, function(d,i) { return (Y[i][1]); }));
-
-    var selectGene = genes[val]
-
-    maxExpression = d3.max(dataArray, function(d){
-      return d[(genes[val])-2];
-    })
-
-    minExpression = d3.min(dataArray, function(d){
-      return d[(genes[val] - 2)];
-    })
-
-    var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
-
-
-    svg.selectAll("dot")
-      .data(Y)
-    .enter().append("circle")
-      .attr("r", 5)
-      .attr("cx", function(d,i) { return x(Y[i][0]); })
-      .attr("cy", function(d,i) { return y(Y[i][1]); })
-      .style('fill', function(d,i) { return colorScale( Y[i][selectGene]); } )
-
-  });
 }

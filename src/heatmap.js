@@ -1,13 +1,10 @@
-//var HEATMAP_GLOBALS_CONTAINER = {};
-
 class Heatmap {
-  constructor(offsetX, offsetY, svgWidth, svgHeight, data) {
+  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data, onClickFn=null) {
     //console.log(data);
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
-    svgWidth = svgWidth;
-    svgHeight = svgHeight;
-
+    
+    function getGeneFromID(id) {
+      return id.split(":")[1];
+    }
 
     var tooltip = d3.select('body')
               .append('div')
@@ -17,11 +14,11 @@ class Heatmap {
               .style('opacity', 0);
 
 
-    var margin = 50;
+    var margin = 40;
 
     var uniqueCells = d3.map(data, function(d){return d.cell;}).keys();
-    var uniqueGenes = d3.map(data, function(d){return d.gene;}).keys();
-    var maxExpression = d3.max(data, function(d){return d.expression});
+    //var uniqueGenes = d3.map(data, function(d){return d.gene;}).keys();
+    //var maxExpression = d3.max(data, function(d){return d.expression});
 
 
     //console.log('max exp:',maxExpression);
@@ -31,23 +28,19 @@ class Heatmap {
 
     this.data = data;
 
-    var borderWidth = 0.1;
+    var borderWidth = 0.2;
     var borderColor = 'black';
 
     var cellSet = [];
-    var geneSet = [];
+    var geneSet = ['Acta2', 'Saa3', 'Sftpa1', 'Ccl5'];
 
-    for (var i = 0; i < 13; i++) {
+    for (var i = 0; i < 10; i++) {
       cellSet.push(uniqueCells[i]);
-      geneSet.push(uniqueGenes[i]);
     }
-    cellSet.push(uniqueCells[20]);
-    cellSet.push(uniqueCells[17]);
-    geneSet.push('Saa3');
-    geneSet.push('Ccl5');
 
 
     
+    /*
     var colorScale = d3.scaleLinear()
         .domain([d3.min(data, function(d){return d.expression}), d3.max(data, function(d){return d.expression})])
         .range(['#eff3ff', '#08519c'])
@@ -55,22 +48,21 @@ class Heatmap {
 
     var colorScale = d3.scaleSequential(d3.interpolateReds)
                       .domain([d3.min(data, function(d){return d.expression}), d3.max(data, function(d){return d.expression})]);
+    */
 
     // Create the SVG canvas for the heatmap
     var svg = d3.select("body").append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight)
-      .attr("id", "HeatMapSVG");
-    /*
+      .attr("id", `HeatmapSVG${svgid}`);
+    ///*
     // Reposition  
-    $("svg").css({
-      top: this.offsetY,
-      left: this.offsetX,
+    $(`#HeatmapSVG${svgid}`).css({
+      top: offsetY,
+      left: offsetX,
       position:'absolute'
     });
     //*/
-
-    var selfID = 77;
     // Border
     svg.append("rect")
       .attr("x", 0)
@@ -96,66 +88,81 @@ class Heatmap {
     }
 
     var updateHeatmap = function () {
-      svg.selectAll(`.heatmap${selfID}`).remove();
+      svg.selectAll(`.heatmap${svgid}`).remove();
 
       var colWidth = (svgWidth - margin) / cellSet.length;
       var rowHeight = (svgHeight - margin) / geneSet.length;
 
-      svg.selectAll('.heatmaprect')
-      .data(data)
-      .enter()
-      .append('rect')
-      .filter(function(d) { 
-        return (cellSet.includes(d.cell) && geneSet.includes(d.gene));
-      })
-      .attr('x', function(d) {
-        var col_idx = cellSet.indexOf(d.cell);
-        var ret = margin + colWidth * col_idx;
-        return ret;
-      })
-      .attr('y', function(d) {
-        var row_idx = geneSet.indexOf(d.gene);
-        var ret =  margin + rowHeight * row_idx;
-        return ret;
-      })
-      .attr('width', function(d) {
-        return colWidth;
-      })
-      .attr('height', function(d) {
-        return rowHeight;
-      })
-      .attr("fill", function (d) { return colorScale(d.expression); })
-      .attr('stroke', borderColor)
-      .attr('stroke-width', 0.1)
-      .attr('class', function(d){ return `heatmap${selfID}`})
-      .attr('id', function(d) {return d3.select(this).attr('class')+` ${d.cell}:${d.gene}`})
-      .on("click", function(d) {
-        console.log('id: ',d3.select(this).attr('id'));
-        console.log('class: ',d3.select(this).attr('class'));
-        console.log('data: ', d);
-      })
-      .on('mouseover', function(d) {
-        var displayString = '<p style="font-size: 12;"><strong>'+`Expression: ${d.expression}`+'</strong><br>';
-        displayString += `Cell: ${d.cell}<br>Gene: ${d.gene}`
-        displayString += '</p>'
-        tooltip.html(displayString)
-        .style('opacity', .9)
-        .style('left', (d3.event.pageX +10) + 'px')
-        .style('top', (d3.event.pageY +10) + 'px')
-        .style('border', '1px solid black')
-        .raise();
-      })
-      .on('mouseout', function(d) {
-        tooltip.html('')
-        .style('border', '')
-        .style('opacity', 0)
-      });
+      for (var i = 0; i < geneSet.length; i++) {
+
+        svg.selectAll('.heatmaprect')
+        .data(data)
+        .enter()
+        .append('rect')
+        .filter(function(d) { 
+          return (cellSet.includes(d.cell));
+        })
+        .attr('x', function(d) {
+          var col_idx = cellSet.indexOf(d.cell);
+          var ret = margin + colWidth * col_idx;
+          return ret;
+        })
+        .attr('y', function(d) {
+          var row_idx = i;
+          var ret =  margin + rowHeight * row_idx;
+          return ret;
+        })
+        .attr('width', function(d) {
+          return colWidth;
+        })
+        .attr('height', function(d) {
+          return rowHeight;
+        })
+        .attr("fill", function (d) { return colorScale(d[geneSet[i]]); })
+        .attr('stroke', borderColor)
+        .attr('stroke-width', borderWidth)
+        .attr('class', function(d){ return `heatmap${svgid}`})
+        .attr('id', function(d) {return d3.select(this).attr('class')+` ${d.cell}:${geneSet[i]}`})
+        .on("click", function(d) {
+          var _id = d3.select(this).attr('id');
+          var geneName = getGeneFromID(_id);
+
+          var _class = d3.select(this).attr('class');
+          console.log('id: ', _id);
+          console.log('class: ', _class);
+          console.log('data: ', d);
+
+          if (onClickFn != null) {
+            onClickFn(geneName);
+          }
+
+        })
+        .on('mouseover', function(d) {
+          var _id = d3.select(this).attr('id');
+          var geneName = getGeneFromID(_id);
+
+          var displayString = '<p style="font-size: 12;"><strong>'+`Expression: ${d[geneName]}`+'</strong><br>';
+          displayString += `Cell: ${d.cell}<br>Gene: ${geneName}`
+          displayString += '</p>'
+          tooltip.html(displayString)
+          .style('opacity', .9)
+          .style('left', (d3.event.pageX +10) + 'px')
+          .style('top', (d3.event.pageY +10) + 'px')
+          .style('border', '1px solid black')
+          .raise();
+        })
+        .on('mouseout', function(d) {
+          tooltip.html('')
+          .style('border', '')
+          .style('opacity', 0)
+        });
+      }
 
       svg.selectAll('.geneText')
         .data(geneSet)
         .enter()
         .append('text').text(function(d) { return d;})
-        .attr('class', `heatmap${selfID}`)
+        .attr('class', `heatmap${svgid}`)
         .attr('font-size', '10px')
         .attr('y', function(d) { 
           var row_idx = geneSet.indexOf(d);
@@ -179,7 +186,7 @@ class Heatmap {
         .data(cellSet)
         .enter()
         .append('text').text(function(d) { return d;})
-        .attr('class', `heatmap${selfID}`)
+        .attr('class', `heatmap${svgid}`)
         .attr('font-size', '10px')
         .attr('text-anchor', 'end')
         .attr('transform', function(d){

@@ -19,18 +19,22 @@
 </head>
 <body>
     
-    <h1 class="head">RNA-Sequencing Over Time</h1>
+    <h1 id='myTitle' class="head">RNA-Sequencing Over Time</h1>
 
-    <div class="selection">
+    <div id='selectGene' class="selection">
         <strong class="font">Select a Gene: </strong><input id="ddlGenes">
+    </div>
+
+    <div id='selectCell' class="selection">
+        <strong class="font">Select a Cell: </strong><input id="ddlCells">
     </div>
     
     <div id="plot1"></div>
     <div id="plot2"></div>
     <div id="plot3"></div>
-    <script src="heatmap.js"></script>
+    <script src="alt_heatmap.js"></script>
     <script src="index.js"></script>
-    <script src="main.js"></script>
-    <script src="cluster.js"></script>
+    <script src="alt_main.js"></script>
+    <script src="alt_cluster.js"></script>
 </body>
 </html>
