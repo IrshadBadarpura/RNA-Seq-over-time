@@ -5,7 +5,6 @@ for (var i = 0; i < filenames.length; i++) {
     loaded.push(false);
 }
 
-
 var viewportWidth = 200;
 var viewportHeight = 200;
 var viewportMargin = 20;
@@ -106,6 +105,11 @@ function loadData(idx, fileName){
         var minExpression = d3.min(dataArray, function(d) {
           return d3.min(d.geneExpressionArray);
         });
+
+        var meanExpression = d3.mean(dataArray, function(d){
+            return d3.mean(d.geneExpressionArray)
+        });
+
         var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
 
 
@@ -115,7 +119,7 @@ function loadData(idx, fileName){
         var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
         //console.log(idx, xPosition);
 
-        clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray));
+        clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray, meanExpression, geneExpressionArray));
 
         heatmapArray.push(new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster));
 
@@ -132,6 +136,10 @@ function selectGeneInCluster(geneName) {
     for (var i = 0; i < clusterArray.length; i++) {
         clusterArray[i].updateView(geneName);
     }  
+}
+
+function selectedGenes(genes){
+    console.log(genes);
 }
 
 function cellDropdown(id, array){
