@@ -75,26 +75,6 @@ function loadData(idx, fileName){
 
             dataArray.push(entry);
         }
-        //console.log(dataArray);
-        //console.log(geneExpressionArray);
-
-        //====================//
-        // Get TSNE positions //
-        //====================//
-        var opt = {}
-        opt.epsilon = 10; // epsilon is learning rate (10 = default)
-        opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
-        opt.dim = 2; // dimensionality of the embedding (2 = default)
-        var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
-        tsne.initDataDist(geneExpressionArray);
-        for(var k = 0; k < 500; k++) {
-          tsne.step(); // every time you call this, solution gets better
-        }
-        var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
-        for (var i = 0; i < dataArray.length; i++) {
-            dataArray[i].tsne = Y[i];
-        }
-        //console.log(dataArray);
 
         //=====================================//
         // Get color scale for gene expression //
@@ -113,22 +93,55 @@ function loadData(idx, fileName){
         var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
 
 
-        //================//
-        // Create Cluster //
-        //================//
-        var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
-        //console.log(idx, xPosition);
-
-        clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray, meanExpression, geneExpressionArray));
-
-        heatmapArray.push(new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster));
-
-        // Check to see if loading is finished
-        loaded[idx] = true;
-        if (!loaded.includes(false)) {
-            $('#myTitle').remove();
-            $('.selection').css("visibility", "visible");
+        //====================//
+        // Get TSNE positions //
+        //====================//
+        
+        /*
+        var opt = {}
+        opt.epsilon = 10; // epsilon is learning rate (10 = default)
+        opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
+        opt.dim = 2; // dimensionality of the embedding (2 = default)
+        var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
+        tsne.initDataDist(geneExpressionArray);
+        for(var k = 0; k < 500; k++) {
+          tsne.step(); // every time you call this, solution gets better
         }
+        var Y = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+        
+        for (var i = 0; i < dataArray.length; i++) {
+            dataArray[i].tsne = Y[i];
+        }
+        */
+
+        //console.log(dataArray);
+
+        var tsne_filename = "../data/tsne/" + 'day0_tsne' + ".csv";
+        d3.csv(tsne_filename).then(function(data_tsne) {
+            for (var i = 0; i < dataArray.length; i++) {
+                dataArray[i].tsne = [ data_tsne[i].tSNE_1, data_tsne[i].tSNE_2 ];
+            }
+            console.log(dataArray);
+
+            //================//
+            // Create Cluster //
+            //================//
+            var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
+            //console.log(idx, xPosition);
+
+            clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray, meanExpression, geneExpressionArray));
+
+            heatmapArray.push(new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster));
+
+            // Check to see if loading is finished
+            loaded[idx] = true;
+            if (!loaded.includes(false)) {
+                $('#myTitle').remove();
+                $('.selection').css("visibility", "visible");
+            }
+            
+        });
+        
     });
 }
 
