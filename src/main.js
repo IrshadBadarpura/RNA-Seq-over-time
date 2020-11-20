@@ -119,7 +119,7 @@ function loadData(idx, fileName){
         var tsne_filename = "../data/tsne/" + 'day0_tsne' + ".csv";
         d3.csv(tsne_filename).then(function(data_tsne) {
             for (var i = 0; i < dataArray.length; i++) {
-                dataArray[i].tsne = [ data_tsne[i].tSNE_1, data_tsne[i].tSNE_2 ];
+                dataArray[i].tsne = [ parseFloat(data_tsne[i].tSNE_1), parseFloat(data_tsne[i].tSNE_2) ];
             }
             console.log(dataArray);
 
@@ -129,7 +129,7 @@ function loadData(idx, fileName){
             var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
             //console.log(idx, xPosition);
 
-            clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray, meanExpression, geneExpressionArray));
+            clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray));
 
             heatmapArray.push(new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster));
 

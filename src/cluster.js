@@ -1,5 +1,5 @@
 class Cluster {
-  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data, meanExpression, geneExpressionArray) {
+  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data) {
 
     var borderWidth = 0.2;
     var borderColor = 'black';
@@ -9,11 +9,20 @@ class Cluster {
         width = 460 - margin.left - margin.right,
         height = 360 - margin.top - margin.bottom;*/
 
-    var x = d3.scaleLinear().range([0, svgHeight]);
-    var y = d3.scaleLinear().range([svgWidth, 0]);
+    var x = d3.scaleLinear().range([20, svgHeight-20]);
+    var y = d3.scaleLinear().range([svgWidth-20, 20]);
     
     x.domain(d3.extent(data, function(d) { return (d.tsne[0]); }));
     y.domain(d3.extent(data, function(d) { return (d.tsne[1]); }));
+
+    var min_x = d3.min(data, function(d) { return (d.tsne[0]); });
+    var min_y = d3.min(data, function(d) { return (d.tsne[1]); });
+    var max_x = d3.min(data, function(d) { return (d.tsne[0]); });
+    var max_y = d3.min(data, function(d) { return (d.tsne[1]); });
+
+    console.log(min_x, max_x);
+    console.log(min_y, max_y);
+
 
     //=======================//
     // Set up the SVG canvas //
@@ -42,34 +51,27 @@ class Cluster {
       .style("stroke-width", borderWidth)
       .style("fill", 'none');
 
+    var selectedGeneName = "";
+
     this._updateView = function(selectedGene) {
       //==================//
       // Draw the cluster //
       //==================//
 
-      // Remove anything previously drawn
-      svg.selectAll('.dot').remove();
+      selectedGeneName = selectedGene;
+      circles.style('fill', function(d) { return colorScale(d[selectedGeneName]); } );
 
-      // Draw the new cluster
-  var  circles =   svg.selectAll("dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class","dot")
-        .attr("r", dotSize)
-        .attr("cx", function(d) { return x(d.tsne[0]); })
-        .attr("cy", function(d) { return y(d.tsne[1]); })
-        .style('fill', function(d) { return colorScale(d[selectedGene]); } );
     }
 
     // When no gene is selected, all dots show black
    var circles = svg.selectAll("dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class","dot")
-        .attr("r", dotSize)
-        .attr("cx", function(d) { return x(d.tsne[0]); })
-        .attr("cy", function(d) { return y(d.tsne[1]); })
-        .style('fill', 'black');
+    .data(data)
+    .enter().append("circle")
+    .attr("class","dot")
+    .attr("r", dotSize)
+    .attr("cx", function(d) { return x(d.tsne[0]); })
+    .attr("cy", function(d) { return y(d.tsne[1]); })
+    .style('fill', 'black');
     //this._updateView("Sftpc");
 
     
@@ -91,40 +93,41 @@ class Cluster {
 
                      return isBrushed(brush_coords, cx, cy);
                  })
-                 .attr("class", "brushed");
+                 .attr("class", "dot brushed");
         }
     } 
 
-      function selected(){
+    function selected(){
 
-        if (!d3.event.selection) return;
+      if (!d3.event.selection) return;
 
-        d3.select(this).call(brush.move, null);
-        var brushed =  d3.selectAll(".brushed").data();
-        var meanExpressionSelected = d3.mean(brushed,function(d){
-          return d3.mean(d.geneExpressionArray);
-        })
-          if (brushed.length > 0) {
-              selectedGenes(brushed);
-          } else {
-          //do something;
-        }
-
-        console.log(meanExpression*10);
-        console.log(meanExpressionSelected*10);
-
-        selectedGenes(brushed);
+      d3.select(this).call(brush.move, null);
+      var brushed =  d3.selectAll(".brushed").data();
+      var meanExpressionSelected = d3.mean(brushed,function(d){ return d[selectedGeneName]; });
+      
+      if (brushed.length > 0) {
+          selectedGenes(brushed);
+      } else {
+        //do something;
       }
 
-      function isBrushed(brush_coords, cx, cy) {
+      var meanExpression = d3.mean(data,function(d){ return d[selectedGeneName]; });
 
-        var x0 = brush_coords[0][0],
-            x1 = brush_coords[1][0],
-            y0 = brush_coords[0][1],
-            y1 = brush_coords[1][1];
+      console.log('population mean: ', meanExpression*10);
+      console.log('selection mean: ', meanExpressionSelected*10);
 
-       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-   }
+      selectedGenes(brushed);
+    }
+
+    function isBrushed(brush_coords, cx, cy) {
+
+      var x0 = brush_coords[0][0],
+          x1 = brush_coords[1][0],
+          y0 = brush_coords[0][1],
+          y1 = brush_coords[1][1];
+
+      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+    }
 
     var brush = d3.brush()
                   .on("brush", highlight)
