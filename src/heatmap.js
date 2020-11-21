@@ -38,7 +38,19 @@ class Heatmap {
       cellSet.push(uniqueCells[i]);
     }
 
+    this._setCells = function(listOfCells) {
+      cellSet = listOfCells;
+      /*
+      for (var i = 0; i < listOfCells.length; i++) {
+        cellSet.push(listOfCells[i]);
+      }*/
+      this.updateHeatmap();
+    }
 
+    this._setGenes = function (listOfGenes) {
+      geneSet = listOfGenes;
+      this.updateHeatmap();
+    }
     
     /*
     var colorScale = d3.scaleLinear()
@@ -207,7 +219,13 @@ class Heatmap {
     this.updateHeatmap = updateHeatmap;
 
     this.updateHeatmap();
-   
+  }
+
+  setCells(listOfCells) {
+    this._setCells(listOfCells);
+  }
+  setGenes(listOfGenes) {
+    this._setGenes(listOfGenes);
   }
 
   addCell(name) {
@@ -216,4 +234,5 @@ class Heatmap {
   addGene(name) {
     this._addGene(name);
   }
+
 }

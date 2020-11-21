@@ -1,4 +1,6 @@
-var filenames = ['Day0_mod', 'Day1_mod', 'Day2_mod'];
+//var filenames = ['Day0_mod', 'Day1_mod', 'Day2_mod'];
+var filenames = ['day0','day1','day2','day3','day8','hour6'];
+var tsneFilenames = ['day0_tsne','day1_tsne','day2_tsne','day3_tsne','day8_tsne','hour6_tsne'];
 
 var loaded = [];
 for (var i = 0; i < filenames.length; i++) {
@@ -36,17 +38,18 @@ $('#myTitle').text('Loading TSNE plots, please wait...');
 
 // Load the data
 for (var file_idx = 0; file_idx < filenames.length; file_idx++) {
-    loadData(file_idx, filenames[file_idx]);
+    loadData(file_idx, filenames[file_idx], tsneFilenames[file_idx]);
 }
 
 // set up the dropdowns
 geneDropdown('ddlGenes', geneList);
 cellDropdown('ddlCells', cellList);
 
-function loadData(idx, fileName){
-    var url = "../data/" + fileName + ".csv";
+function loadData(idx, data_filename, tsne_filename){
+    var dataPath = "../data/1000x1000/" + data_filename + ".csv";
+    var tsnePath = "../data/tsne/" + tsne_filename + ".csv";
 
-    d3.csv(url).then(function(data) {
+    d3.csv(dataPath).then(function(data) {
 
         var dataArray = [];
         var geneExpressionArray = [];
@@ -116,8 +119,7 @@ function loadData(idx, fileName){
 
         //console.log(dataArray);
 
-        var tsne_filename = "../data/tsne/" + 'day0_tsne' + ".csv";
-        d3.csv(tsne_filename).then(function(data_tsne) {
+        d3.csv(tsnePath).then(function(data_tsne) {
             for (var i = 0; i < dataArray.length; i++) {
                 dataArray[i].tsne = [ parseFloat(data_tsne[i].tSNE_1), parseFloat(data_tsne[i].tSNE_2) ];
             }
@@ -131,8 +133,9 @@ function loadData(idx, fileName){
 
             clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray));
 
-            heatmapArray.push(new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster));
-
+            var hm = new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
+            hm.setGenes(geneList.slice(0, 10));
+            heatmapArray.push(hm);
             // Check to see if loading is finished
             loaded[idx] = true;
             if (!loaded.includes(false)) {
@@ -152,6 +155,9 @@ function selectGeneInCluster(geneName) {
 }
 
 function selectedGenes(genes){
+    for (var i = 0; i < heatmapArray.length; i++) {
+        //heatmapArray[i].setCells(genes.map(function(d){return d.cell;}));
+    }
     console.log(genes);
 }
 
