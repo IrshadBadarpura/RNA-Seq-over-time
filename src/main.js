@@ -1,3 +1,9 @@
+var tooltip = d3.select("body")
+                .append("div")
+                .attr("class","tooltip")
+                .style("opacity","0")
+                .style("position","absolute")
+
 //var filenames = ['Day0_mod', 'Day1_mod', 'Day2_mod'];
 var filenames = ['day0','day1','day2','day3','day8','hour6'];
 var tsneFilenames = ['day0_tsne','day1_tsne','day2_tsne','day3_tsne','day8_tsne','hour6_tsne'];
@@ -131,7 +137,8 @@ function loadData(idx, data_filename, tsne_filename){
             var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
             //console.log(idx, xPosition);
 
-            clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray));
+            clusterArray.push(new Cluster(idx*2, xPosition, 100, viewportWidth, viewportHeight, colorScale, dataArray, tooltip
+                ));
 
             var hm = new Heatmap(idx*2+1, xPosition, 100+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
             hm.setGenes(geneList.slice(0, 10));
