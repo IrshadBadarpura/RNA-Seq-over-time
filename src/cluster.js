@@ -74,7 +74,10 @@ class Cluster {
     .style('fill', 'black');
     //this._updateView("Sftpc");
 
-    
+    //round-off function
+    function round(value, decimals) {
+          return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+        }
 
     function highlight() {
 
@@ -219,7 +222,7 @@ deviationcircle.append("path")
             tooltip.transition()
                         .delay(200)
                         .style("opacity","1.0")
-                tooltip.html("<p>Selected Standard Deviation:" + deviationSelected +"</p>")
+                tooltip.html("<p>Selected Standard Deviation:" + round(deviationSelected,2) +"</p>")
                 .style("left", (d3.event.pageX + 10) + "px")     
                 .style("top", (d3.event.pageY - 28)+ "px");
           })
@@ -248,7 +251,7 @@ deviationcircle.append("path")
               tooltip.transition()
                         .delay(200)
                         .style("opacity","1.0")
-                tooltip.html("<p>Selected Mean:" + meanExpressionSelected +"</p>")
+                tooltip.html("<p>Selected Mean:" + round(meanExpressionSelected,2) +"</p>")
                 .style("left", (d3.event.pageX + 10) + "px")     
                 .style("top", (d3.event.pageY - 28)+ "px");
             })
@@ -291,7 +294,7 @@ deviationcircle.append("path")
             tooltip.transition()
                         .delay(200)
                         .style("opacity","1.0")
-                tooltip.html("<p>Standard Deviation:" + deviationPopulation +"</p>")
+                tooltip.html("<p>Standard Deviation:" + round(deviationPopulation,2) +"</p>")
                 .style("left", (d3.event.pageX + 10) + "px")     
                 .style("top", (d3.event.pageY - 28)+ "px");
           })
@@ -320,7 +323,7 @@ deviationcircle.append("path")
               tooltip.transition()
                         .delay(200)
                         .style("opacity","1.0")
-                tooltip.html("<p>Mean:" + meanPopulation +"</p>")
+                tooltip.html("<p>Mean:" + round(meanPopulation,2) +"</p>")
                 .style("left", (d3.event.pageX + 10) + "px")     
                 .style("top", (d3.event.pageY - 28)+ "px");
 
