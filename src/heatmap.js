@@ -103,7 +103,7 @@ class Heatmap {
       svg.selectAll(`.heatmap${svgid}`).remove();
 
       var colWidth = (svgWidth - margin) / cellSet.length;
-      var rowHeight = (svgHeight - margin) / geneSet.length;
+      var rowHeight = (svgHeight) / geneSet.length;
 
       for (var i = 0; i < geneSet.length; i++) {
 
@@ -121,7 +121,7 @@ class Heatmap {
         })
         .attr('y', function(d) {
           var row_idx = i;
-          var ret =  margin + rowHeight * row_idx;
+          var ret = rowHeight * row_idx;
           return ret;
         })
         .attr('width', function(d) {
@@ -178,7 +178,7 @@ class Heatmap {
         .attr('font-size', '10px')
         .attr('y', function(d) { 
           var row_idx = geneSet.indexOf(d);
-          var ret =  margin + rowHeight * row_idx + rowHeight*(0.66);
+          var ret = rowHeight * row_idx + rowHeight*(0.66);
           //console.log(row_idx, ret);
           return ret;
         })
@@ -194,6 +194,7 @@ class Heatmap {
           }
         });
 
+      /*
       svg.selectAll('.cellText')
         .data(cellSet)
         .enter()
@@ -214,7 +215,7 @@ class Heatmap {
           else {
             console.log('TEXT:',d);
           }
-        });
+        });*/
     }
     this.updateHeatmap = updateHeatmap;
 

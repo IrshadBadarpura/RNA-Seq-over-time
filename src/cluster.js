@@ -1,28 +1,17 @@
 class Cluster {
-  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data, tooltip) {
+  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data, selectFn=null) {
 
     var borderWidth = 0.2;
     var borderColor = 'black';
-    var dotSize = 2;
-    /*
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
-        width = 460 - margin.left - margin.right,
-        height = 360 - margin.top - margin.bottom;*/
+    var dotSize = 1;
 
-    var x = d3.scaleLinear().range([20, svgHeight-20]);
-    var y = d3.scaleLinear().range([svgWidth-20, 20]);
+    var clusterMargin = 20;
+
+    var x = d3.scaleLinear().range([svgWidth-clusterMargin, clusterMargin]);
+    var y = d3.scaleLinear().range([clusterMargin, svgHeight-20]);
     
     x.domain(d3.extent(data, function(d) { return (d.tsne[0]); }));
     y.domain(d3.extent(data, function(d) { return (d.tsne[1]); }));
-
-    var min_x = d3.min(data, function(d) { return (d.tsne[0]); });
-    var min_y = d3.min(data, function(d) { return (d.tsne[1]); });
-    var max_x = d3.min(data, function(d) { return (d.tsne[0]); });
-    var max_y = d3.min(data, function(d) { return (d.tsne[1]); });
-
-    console.log(min_x, max_x);
-    console.log(min_y, max_y);
-
 
     //=======================//
     // Set up the SVG canvas //
@@ -74,10 +63,9 @@ class Cluster {
     .style('fill', 'black');
     //this._updateView("Sftpc");
 
-    //round-off function
     function round(value, decimals) {
-          return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
-        }
+      return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+    }
 
     function highlight() {
 
@@ -96,7 +84,7 @@ class Cluster {
 
                      return isBrushed(brush_coords, cx, cy);
                  })
-                 .attr("class", "dot brushed");
+                 .attr("class", `dot brushed${svgid}`);
             
             
         }
@@ -113,7 +101,7 @@ class Cluster {
       if (!d3.event.selection) return;
 
       d3.select(this).call(brush.move, null);
-      var brushed =  d3.selectAll(".brushed").data();
+      var brushed =  d3.selectAll(`.brushed${svgid}`).data();
 
       var cloudData = {}
 
@@ -186,7 +174,6 @@ class Cluster {
         //                   .attr("cx", 200 + "px")
         //                   .attr("cy", 60 + "px")
         //                   .attr("fill", "white")
-
 
 // //selected population mean and deviation
 var color = "black"
@@ -404,18 +391,18 @@ function draw(words) {
       
 }
 
-          selectedGenes(brushed);
+          selectFn(brushed, svgid);
       } else {
         //do something;
       }
 
       
-      
+      /*
       console.log(meanPopulation - deviationPopulation);
       console.log('population mean: ', meanPopulation*10);
       console.log('selection mean: ', meanExpressionSelected*10);
-
-      selectedGenes(brushed);
+      */
+      selectFn(brushed, svgid);
     }
 
     function isBrushed(brush_coords, cx, cy) {
