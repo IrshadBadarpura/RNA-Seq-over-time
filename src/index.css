@@ -32,21 +32,9 @@
 } */
 
 .demo{
-    border: solid 1px black;
-    position: absolute;
-    top:600px;
-    left:800px;
-    width: 500px;
-    height: 300px;
 }
 
 .cloud{
-    border: solid 1px black;
-    position: absolute;
-    top:600px;
-    left:400px;
-    width: 300px;
-    height: 300px;
 }
 
 .dot{

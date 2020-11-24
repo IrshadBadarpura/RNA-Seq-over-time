@@ -131,10 +131,9 @@ class Cluster {
 
       var deviationcircle = d3.select(".demo")
                               .append("svg")
-                              .attr("width", 500 +"px")
-                              .attr("height", 400+"px")
-
-      
+                              .attr("width", (windowWidth-viewportMargin)/2 +"px")
+                              .attr("height", viewportHeight+"px")
+       
       if (brushed.length > 0) {
 
         // ////selected population mean and deviation
@@ -191,6 +190,7 @@ deviationcircle.append("path")
 
 var color = "blue"
 var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 2000;
+// var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 2000;
 
 
 var triangleExpression = d3.symbol()
@@ -359,7 +359,7 @@ deviationcircle.append("g").append("text")
   .attr("x",420).attr("y",180).text("S. D.").style("fill", "blue")
 //word cloud
 var layout = d3.layout.cloud()
-    .size([300, 300])
+    .size([(windowWidth-viewportMargin)/2, viewportHeight])
     .words((Object.keys(cloudData)).map(function(d) {
       return {text: d, size: 10 * cloudData[d]};
     }))

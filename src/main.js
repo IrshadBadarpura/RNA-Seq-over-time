@@ -28,6 +28,18 @@ var viewportMargin = 10;
 var viewportWidth = (windowWidth - viewportMargin*(filenames.length+2)) / filenames.length;
 var viewportHeight = (windowHeight - upperMargin - viewportMargin*5) / 4;
 
+$('#cloud').css({
+    top: upperMargin+(viewportHeight+viewportMargin)*3,
+    left: viewportMargin,
+    position:'absolute'
+});
+
+$('#demo').css({
+    top: upperMargin+(viewportHeight+viewportMargin)*3,
+    left: viewportMargin + (3*(viewportWidth+viewportMargin)),
+    position:'absolute'
+});
+
 
 var clusterArray = [];
 var heatmapArray = [];
@@ -206,7 +218,7 @@ function loadData(idx, data_filename, tsne_filename){
                 myGeneList.push(topCountGenes[30]);
                 myGeneList.push(topCountGenes[44]);
                 myGeneList.push(topCountGenes[48]);
-                otherPlot.setGenes(myGeneList);
+                //otherPlot.setGenes(myGeneList);
             }
             
         });

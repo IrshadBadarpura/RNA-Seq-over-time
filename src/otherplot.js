@@ -13,7 +13,7 @@ class OtherPlot {
               .style('opacity', 0);
 
 
-    var margin = 30;
+    var margin = 50;
     var maxRadius = 30;
 
     var legendSize = 200;
