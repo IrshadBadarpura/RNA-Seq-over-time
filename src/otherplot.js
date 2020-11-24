@@ -336,10 +336,13 @@ class OtherPlot {
             .attr('fill', 'blue')
             .style('opacity', 0.3)
             .attr('class','toRemove')
+            .attr('id',`dev${i}${j}:${avgExpression.toFixed(4)}:${expDeviation.toFixed(4)}:${(genePresencePercent*100).toFixed(2)}`)
             .on('mouseover', function() {
-              var displayString = '<p style="font-size: 12;">'+`Mean Expression: ${avgExpression.toFixed(4)}`;
-              displayString += '<br>'+`Standard Deviation: ${expDeviation.toFixed(4)}`;
-              displayString += '<br>'+`Presence in sample: ${(genePresencePercent*100).toFixed(2)}%`;
+              var id = d3.select(this).attr('id');
+
+              var displayString = '<p style="font-size: 12;">'+`Mean Expression: ${id.split(":")[1]}`;
+              displayString += '<br>'+`Standard Deviation: ${id.split(":")[2]}`;
+              displayString += '<br>'+`Presence in sample: ${id.split(":")[3]}%`;
               displayString += '</p>';
               tooltip.html(displayString)
               .style('opacity', .9)
@@ -360,10 +363,13 @@ class OtherPlot {
             .attr('fill', 'blue')
             .style('opacity', 0.6)
             .attr('class','toRemove')
+            .attr('id',`avg${i}${j}:${avgExpression.toFixed(4)}:${expDeviation.toFixed(4)}:${(genePresencePercent*100).toFixed(2)}`)
             .on('mouseover', function() {
-              var displayString = '<p style="font-size: 12;">'+`Mean Expression: ${avgExpression.toFixed(4)}`;
-              displayString += '<br>'+`Standard Deviation: ${expDeviation.toFixed(4)}`;
-              displayString += '<br>'+`Presence in sample: ${(genePresencePercent*100).toFixed(2)}%`;
+              var id = d3.select(this).attr('id');
+
+              var displayString = '<p style="font-size: 12;">'+`Mean Expression: ${id.split(":")[1]}`;
+              displayString += '<br>'+`Standard Deviation: ${id.split(":")[2]}`;
+              displayString += '<br>'+`Presence in sample: ${id.split(":")[3]}%`;
               displayString += '</p>';
               tooltip.html(displayString)
               .style('opacity', .9)
@@ -431,6 +437,27 @@ class OtherPlot {
               .attr('fill', 'red')
               .style('opacity', 0.3)
               .attr('class','toRemove');
+              /*
+              .attr('id',`_avg${i}${j}:${avgExpressionSelected.toFixed(4)}:${expDeviationSelected.toFixed(4)}:${(genePresencePercentSelected*100).toFixed(2)}`)
+              .on('mouseover', function() {
+                var id = d3.select(this).attr('id');
+
+                var displayString = '<p style="font-size: 12;">'+`Mean Expression: ${id.split(":")[1]}`;
+                displayString += '<br>'+`Standard Deviation: ${id.split(":")[2]}`;
+                displayString += '<br>'+`Presence in sample: ${id.split(":")[3]}%`;
+                displayString += '</p>';
+                tooltip.html(displayString)
+                .style('opacity', .9)
+                .style('left', (d3.event.pageX +10) + 'px')
+                .style('top', (d3.event.pageY +10) + 'px')
+                .style('border', '1px solid black')
+                .raise();
+              })
+              .on('mouseout', function() {
+                tooltip.html('')
+                .style('border', '')
+                .style('opacity', 0)
+              });*/
             svg.append('circle')
               .attr('cx', xPosition)
               .attr('cy', svgHeight/2 - ((svgHeight/2)-margin)*genePresencePercentSelected)
@@ -438,6 +465,27 @@ class OtherPlot {
               .attr('fill', 'red')
               .style('opacity', 0.6)
               .attr('class','toRemove');
+              /*
+              .attr('id',`_avg${i}${j}:${avgExpressionSelected.toFixed(4)}:${expDeviationSelected.toFixed(4)}:${(genePresencePercentSelected*100).toFixed(2)}`)
+              .on('mouseover', function() {
+                var id = d3.select(this).attr('id');
+
+                var displayString = '<p style="font-size: 12;">'+`Mean Expression: ${id.split(":")[1]}`;
+                displayString += '<br>'+`Standard Deviation: ${id.split(":")[2]}`;
+                displayString += '<br>'+`Presence in sample: ${id.split(":")[3]}%`;
+                displayString += '</p>';
+                tooltip.html(displayString)
+                .style('opacity', .9)
+                .style('left', (d3.event.pageX +10) + 'px')
+                .style('top', (d3.event.pageY +10) + 'px')
+                .style('border', '1px solid black')
+                .raise();
+              })
+              .on('mouseout', function() {
+                tooltip.html('')
+                .style('border', '')
+                .style('opacity', 0)
+              });*/
             svg.append('line')
               .attr('x1', xPosition)
               .attr('y1', svgHeight/2 - ((svgHeight/2)-margin)*genePresencePercentSelected)
@@ -450,126 +498,6 @@ class OtherPlot {
 
         }
       }
-
-      /*
-      svg.selectAll(`.otherPlot${svgid}`).remove();
-
-      var colWidth = (svgWidth - margin) / cellSet.length;
-      var rowHeight = (svgHeight - margin) / geneSet.length;
-
-      for (var i = 0; i < geneSet.length; i++) {
-
-        svg.selectAll('.heatmaprect')
-        .data(data)
-        .enter()
-        .append('rect')
-        .filter(function(d) { 
-          return (cellSet.includes(d.cell));
-        })
-        .attr('x', function(d) {
-          var col_idx = cellSet.indexOf(d.cell);
-          var ret = margin + colWidth * col_idx;
-          return ret;
-        })
-        .attr('y', function(d) {
-          var row_idx = i;
-          var ret =  margin + rowHeight * row_idx;
-          return ret;
-        })
-        .attr('width', function(d) {
-          return colWidth;
-        })
-        .attr('height', function(d) {
-          return rowHeight;
-        })
-        .attr("fill", function (d) { return colorScale(d[geneSet[i]]); })
-        .attr('stroke', borderColor)
-        .attr('stroke-width', borderWidth)
-        .attr('class', function(d){ return `heatmap${svgid}`})
-        .attr('id', function(d) {return d3.select(this).attr('class')+` ${d.cell}:${geneSet[i]}`})
-        .on("click", function(d) {
-          var _id = d3.select(this).attr('id');
-          var geneName = getGeneFromID(_id);
-
-          var _class = d3.select(this).attr('class');
-          console.log('id: ', _id);
-          console.log('class: ', _class);
-          console.log('data: ', d);
-
-          if (onClickFn != null) {
-            onClickFn(geneName);
-          }
-
-        })
-        .on('mouseover', function(d) {
-          var _id = d3.select(this).attr('id');
-          var geneName = getGeneFromID(_id);
-
-          var displayString = '<p style="font-size: 12;"><strong>'+`Expression: ${d[geneName]}`+'</strong><br>';
-          displayString += `Cell: ${d.cell}<br>Gene: ${geneName}`
-          displayString += '</p>'
-          tooltip.html(displayString)
-          .style('opacity', .9)
-          .style('left', (d3.event.pageX +10) + 'px')
-          .style('top', (d3.event.pageY +10) + 'px')
-          .style('border', '1px solid black')
-          .raise();
-        })
-        .on('mouseout', function(d) {
-          tooltip.html('')
-          .style('border', '')
-          .style('opacity', 0)
-        });
-        
-      }
-
-      svg.selectAll('.geneText')
-        .data(geneSet)
-        .enter()
-        .append('text').text(function(d) { return d;})
-        .attr('class', `heatmap${svgid}`)
-        .attr('font-size', '10px')
-        .attr('y', function(d) { 
-          var row_idx = geneSet.indexOf(d);
-          var ret =  margin + rowHeight * row_idx + rowHeight*(0.66);
-          //console.log(row_idx, ret);
-          return ret;
-        })
-        .attr('x', margin*0.9)
-        .attr('text-anchor', 'end')
-        .on('click', function(d){
-          if (d3.event.shiftKey) {
-            geneSet.splice(geneSet.indexOf(d), 1);
-            updateHeatmap();
-          }
-          else {
-            console.log('TEXT:',d);
-          }
-        });
-
-      svg.selectAll('.cellText')
-        .data(cellSet)
-        .enter()
-        .append('text').text(function(d) { return d;})
-        .attr('class', `heatmap${svgid}`)
-        .attr('font-size', '10px')
-        .attr('text-anchor', 'end')
-        .attr('transform', function(d){
-          var col_idx = cellSet.indexOf(d);
-          var ret =  margin + colWidth * col_idx + colWidth/2;
-          return `translate(${ret},${margin*0.9})rotate(45)`;
-        })
-        .on('click', function(d){
-          if (d3.event.shiftKey) {
-            cellSet.splice(cellSet.indexOf(d), 1);
-            updateHeatmap();
-          }
-          else {
-            console.log('TEXT:',d);
-          }
-        });
-
-      */
     }
 
     
