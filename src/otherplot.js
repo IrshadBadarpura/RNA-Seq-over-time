@@ -13,7 +13,7 @@ class OtherPlot {
               .style('opacity', 0);
 
 
-    var margin = 50;
+    var margin = 20;
     var maxRadius = 30;
 
     var legendSize = 200;
@@ -283,7 +283,7 @@ class OtherPlot {
       var num_genes = geneSet.length;
       var divisionSize = (svgWidth - legendSize - margin) / num_genes;
       var timepoints = allData.length;
-      var geneMargin = (divisionSize-margin) / timepoints;
+      var geneMargin = (divisionSize-margin*2) / timepoints;
 
       //console.log(divisionSize, geneMargin);
 
@@ -295,7 +295,7 @@ class OtherPlot {
         svg.append('text').text(geneName)
           .attr('class', 'toRemove')
           .attr('font-size', '10px')
-          .attr('y', svgHeight - 12)
+          .attr('y', svgHeight - 5)
           .attr('x', textXPosition)
           .attr('text-anchor', 'middle')
           .on('click', function(){ });
