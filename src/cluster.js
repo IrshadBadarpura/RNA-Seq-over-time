@@ -176,7 +176,7 @@ class Cluster {
 
 // //selected population mean and deviation
 var color = "black"
-var triangleSize = 500
+var triangleSize = 50
 
 var triangle = d3.symbol()
             .type(d3.symbolTriangle)
@@ -186,10 +186,10 @@ deviationcircle.append("path")
           .attr("d", triangle)
           .attr("stroke", color)
           .attr("fill", color)
-          .attr("transform", function(d) { return "translate(" + 100 + "," + 200 + ")"; });
+          .attr("transform", function(d) { return "translate(" + svgWidth *2/3 + "," + svgHeight*2/3 + ")"; });
 
 var color = "blue"
-var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 2000;
+var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 150 ;
 // var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 2000;
 
 
@@ -203,7 +203,7 @@ deviationcircle.append("path")
           .attr("stroke", color)
           .attr("fill", color)
           .attr("opacity", "0.2")
-          .attr("transform", function(d) { return "translate(" + 100 + "," + 200 + ")"; })
+          .attr("transform", function(d) { return "translate(" + svgWidth * 2/3 + "," + svgHeight *2/3 + ")"; })
           .on("mouseover", function(){
             d3.select(this).attr("opacity","1.0")
             tooltip.transition()
@@ -219,7 +219,7 @@ deviationcircle.append("path")
           })
 
   var color = "red"
-  var triangleSizeExpression = (meanExpressionSelected ) * 2000;
+  var triangleSizeExpression = (meanExpressionSelected ) * 150;
 
 
   var triangleExpression = d3.symbol()
@@ -232,7 +232,7 @@ deviationcircle.append("path")
             .attr("stroke", color)
             .attr("fill", color)
             .attr("opacity", "0.5")
-            .attr("transform", function(d) { return "translate(" + 100 + "," + 200 + ")"; })
+            .attr("transform", function(d) { return "translate(" + svgWidth*2/3 + "," + svgHeight*2/3 + ")"; })
             .on("mouseover", function(){
               d3.select(this).attr("opacity","1.0")
               tooltip.transition()
@@ -249,7 +249,7 @@ deviationcircle.append("path")
 
 //complete population mean and deviation
 var color = "black"
-var triangleSizeP = 500
+var triangleSizeP = 50
 
 var triangleP = d3.symbol()
             .type(d3.symbolTriangle)
@@ -259,10 +259,10 @@ deviationcircle.append("path")
           .attr("d", triangleP)
           .attr("stroke", color)
           .attr("fill", color)
-          .attr("transform", function(d) { return "translate(" + 280 + "," + 200 + ")"; });
+          .attr("transform", function(d) { return "translate(" + svgWidth*4/3  + "," + svgHeight*2/3  + ")"; });
 
 var color = "blue"
-var triangleSizeExpressionP = (deviationPopulation + meanPopulation ) * 2000;
+var triangleSizeExpressionP = (deviationPopulation + meanPopulation ) * 150 ;
 
 
 var triangleExpressionP = d3.symbol()
@@ -275,7 +275,7 @@ deviationcircle.append("path")
           .attr("stroke", color)
           .attr("fill", color)
           .attr("opacity", "0.2")
-          .attr("transform", function(d) { return "translate(" + 280 + "," + 200 + ")"; })
+          .attr("transform", function(d) { return "translate(" + svgWidth*4/3  + "," + svgHeight*2/3  + ")"; })
           .on("mouseover", function(){
             d3.select(this).attr("opacity","1.0")
             tooltip.transition()
@@ -291,7 +291,7 @@ deviationcircle.append("path")
           });
 
 var color = "red"
-var triangleSizeExpressionP = (meanPopulation) * 2000;
+var triangleSizeExpressionP = (meanPopulation) * 150;
 
 
 var triangleExpressionP = d3.symbol()
@@ -304,7 +304,7 @@ deviationcircle.append("path")
             .attr("stroke", color)
             .attr("fill", color)
             .attr("opacity", "0.5")
-            .attr("transform", function(d) { return "translate(" + 280 + "," + 200 + ")"; })
+            .attr("transform", function(d) { return "translate(" + svgWidth*4/3 + "," + svgHeight*2/3 + ")"; })
             .on("mouseover", function(d){
               d3.select(this).attr("opacity","1.0");
               tooltip.transition()
@@ -323,7 +323,7 @@ deviationcircle.append("path")
 //legend Mean
 
 var color = "red"
-var meanLegend = 200
+var meanLegend = 150
 
 var meanLegend = d3.symbol()
             .type(d3.symbolTriangle)
@@ -334,10 +334,10 @@ deviationcircle.append("path")
   .attr("stroke", color)
   .attr("fill", color)
   .attr("opacity", "0.5")
-  .attr("transform", function(d) { return "translate(" + 400 + "," + 150 + ")"; })
+  .attr("transform", function(d) { return "translate(" + 400 + "," + 100 + ")"; })
 
 deviationcircle.append("g").append("text")
-  .attr("x",420).attr("y",155).text("Mean").style("fill", "red")
+  .attr("x",420).attr("y",105).text("Mean").style("fill", "red")
 
 //Legend Standard Deviation
 
@@ -353,10 +353,18 @@ deviationcircle.append("path")
   .attr("stroke", color)
   .attr("fill", color)
   .attr("opacity", "0.2")
-  .attr("transform", function(d) { return "translate(" + 400 + "," + 175 + ")"; })
+  .attr("transform", function(d) { return "translate(" + 400 + "," + 125 + ")"; })
 
 deviationcircle.append("g").append("text")
-  .attr("x",420).attr("y",180).text("S. D.").style("fill", "blue")
+  .attr("x",420).attr("y",130).text("S. D.").style("fill", "blue")
+
+//triangle label
+deviationcircle.append("g").append("text")
+  .attr("x",svgWidth*2/3 - 70).attr("y",svgHeight*2/3 + 50).text("Selected Population").style("fill", "black")
+
+deviationcircle.append("g").append("text")
+  .attr("x",svgWidth*4/3 - 70).attr("y",svgHeight*2/3 + 50).text("Complete Population").style("fill", "black")
+
 //word cloud
 var layout = d3.layout.cloud()
     .size([(windowWidth-viewportMargin)/2, viewportHeight])
@@ -390,12 +398,10 @@ function draw(words) {
       .text(function(d) { return d.text; });
       
 }
-
-          selectFn(brushed, svgid);
-      } else {
+      selectFn(brushed, svgid);
+        } else {
         //do something;
       }
-
       
       /*
       console.log(meanPopulation - deviationPopulation);
@@ -428,4 +434,5 @@ function draw(words) {
     this._updateView(selectedGene);
   }
 }
+
 
