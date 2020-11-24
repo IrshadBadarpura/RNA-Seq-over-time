@@ -12,7 +12,6 @@ var tsneFilenames = ['day0_tsne','day1_tsne','day2_tsne','day3_tsne','day8_tsne'
 var allData = [];
 
 var topCountGenes = [];
-var topAvgGenes = [];
 
 var loaded = [];
 for (var i = 0; i < filenames.length; i++) {
@@ -133,12 +132,11 @@ function loadData(idx, data_filename, tsne_filename){
             return d3.mean(d.geneExpressionArray)
         });
 
-        var colorScale = d3.scaleSequential(d3.interpolateReds).domain([maxExpression,minExpression]);
-
+        var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([minExpression, maxExpression]);
+        
         allMinExp.push(minExpression);
         allMaxExp.push(maxExpression);
 
-        // Find genes with high count
         var nzArray = geneList.map(function(geneName) {
             var count = d3.sum(dataArray, function(d) {
                 if (d[geneName] > 0) {
@@ -165,23 +163,6 @@ function loadData(idx, data_filename, tsne_filename){
         var minNonZero = d3.min(nzArray, function(d){return d.count;});
         var meanNonZero = d3.mean(nzArray, function(d){return d.count;});
         var maxNonZero = d3.max(nzArray, function(d){return d.count;});
-
-        // FInd genes with high expression
-        var avgExpressions = geneList.map(function(geneName) {
-            var avg = d3.mean(dataArray, function(d) { return d[geneName]; });
-            return {name: geneName, mean: avg};
-        });
-
-        sorted50 = avgExpressions.sort((a,b) => b.mean-a.mean).slice(0,50);
-        //console.log(sorted50);
-
-        for (var _i = 0; _i < 50; _i++) {
-            var name = sorted50[_i].name;
-            //console.log(name, sorted50[_i]);
-            if (!topAvgGenes.includes(name) && !topCountGenes.includes(name)) {
-                topAvgGenes.push(name);
-            }
-        }
 
         //====================//
         // Get TSNE positions //
@@ -221,7 +202,7 @@ function loadData(idx, data_filename, tsne_filename){
             clusterArray.push(new Cluster(idx, xPosition, upperMargin, viewportWidth, viewportHeight, colorScale, dataArray, selectFn=selectedCells));
 
             var hm = new Heatmap(idx, xPosition, upperMargin+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
-            hm.setGenes(topCountGenes.slice(0,10).concat(topAvgGenes.slice(0,0)));
+            hm.setGenes(topCountGenes.slice(0,8));
             heatmapArray[idx] = hm;
 
             // Check to see if loading is finished
@@ -230,8 +211,14 @@ function loadData(idx, data_filename, tsne_filename){
                 $('#myTitle').remove();
                 $('.selection').css("visibility", "visible");
 
+                //console.log(topCountGenes);
                 otherPlot = new OtherPlot(0, viewportMargin, upperMargin+(viewportHeight+viewportMargin)*2, (viewportWidth+viewportMargin)*allData.length-viewportMargin, viewportHeight, colorScale, allData, d3.min(allMinExp), d3.max(allMaxExp));
-                //otherPlot.setGenes(topCountGenes.slice(0,0).concat(topAvgGenes.slice(0,0)));
+                //otherPlot.setGenes(geneList.slice(0, 4));
+                var myGeneList = topCountGenes.slice(0,2);
+                myGeneList.push(topCountGenes[30]);
+                myGeneList.push(topCountGenes[44]);
+                myGeneList.push(topCountGenes[48]);
+                //otherPlot.setGenes(myGeneList);
             }
             
         });
