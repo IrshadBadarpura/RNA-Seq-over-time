@@ -1,14 +1,14 @@
 var tooltip = d3.select("body")
-                .append("div")
-                .attr("class","tooltip")
-                .style("opacity","0")
-                .style("position","absolute")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", "0")
+    .style("position", "absolute")
 
 
 
 //var filenames = ['Day0_mod', 'Day1_mod', 'Day2_mod'];
-var filenames = ['day0','day1','day2','day3','day8','hour6'];
-var tsneFilenames = ['day0_tsne','day1_tsne','day2_tsne','day3_tsne','day8_tsne','hour6_tsne'];
+var filenames = ['day0', 'day1', 'day2', 'day3', 'day8', 'hour6'];
+var tsneFilenames = ['day0_tsne', 'day1_tsne', 'day2_tsne', 'day3_tsne', 'day8_tsne', 'hour6_tsne'];
 var allData = [];
 
 var topCountGenes = [];
@@ -25,26 +25,32 @@ var windowHeight = window.innerHeight;
 var upperMargin = 30;
 var viewportMargin = 10;
 
-var viewportWidth = (windowWidth - viewportMargin*(filenames.length+2)) / filenames.length;
-var viewportHeight = (windowHeight - upperMargin - viewportMargin*5) / 4;
+var viewportWidth = (windowWidth - viewportMargin * (filenames.length + 2)) / filenames.length;
+var viewportHeight = (windowHeight - upperMargin - viewportMargin * 5) / 4;
 
 $('#cloud').css({
-    top: upperMargin+(viewportHeight+viewportMargin)*3,
+    top: upperMargin + (viewportHeight + viewportMargin) * 3,
     left: viewportMargin,
-    position:'absolute'
+    position: 'absolute'
 });
 
 $('#demo').css({
-    top: upperMargin+(viewportHeight+viewportMargin)*3,
-    left: viewportMargin + (3*(viewportWidth+viewportMargin)),
-    position:'absolute'
+    top: upperMargin + (viewportHeight + viewportMargin) * 3,
+    left: viewportMargin + (3 * (viewportWidth + viewportMargin)),
+    position: 'absolute'
 });
 
 
 var clusterArray = [];
 var heatmapArray = [];
+/* For Balloon Plot */
+var balloonPlotArray = []
+/* End */
 for (var i = 0; i < filenames.length; i++) {
     heatmapArray.push(null);
+    /* For Balloon Plot */
+    balloonPlotArray.push(null);
+    /* End */
 }
 var otherPlot;
 
@@ -58,16 +64,16 @@ var allMinExp = [];
 $('#selectGene').css({
     top: 5,
     left: 5,
-    'margin-left':0,
-    'margin-top':0,
-    position:'absolute'
+    'margin-left': 0,
+    'margin-top': 0,
+    position: 'absolute'
 });
 $('#selectCell').css({
     top: 5,
     left: 400,
-    'margin-left':0,
-    'margin-top':0,
-    position:'absolute'
+    'margin-left': 0,
+    'margin-top': 0,
+    position: 'absolute'
 });
 
 $('.selection').css("visibility", "hidden");
@@ -82,29 +88,29 @@ for (var file_idx = 0; file_idx < filenames.length; file_idx++) {
 geneDropdown('ddlGenes', geneList);
 cellDropdown('ddlCells', cellList);
 
-function loadData(idx, data_filename, tsne_filename){
+function loadData(idx, data_filename, tsne_filename) {
     var dataPath = "../data/1000x1000/" + data_filename + ".csv";
     var tsnePath = "../data/tsne/" + tsne_filename + ".csv";
 
-    d3.csv(dataPath).then(function(data) {
+    d3.csv(dataPath).then(function (data) {
 
         var dataArray = [];
         var geneExpressionArray = [];
 
-        for(var i = 0; i < data.length; i++){
+        for (var i = 0; i < data.length; i++) {
             var keys = Object.keys(data[i]);
             var cellName = data[i][keys[0]];
-            var entry = {cell:cellName};
+            var entry = { cell: cellName };
             if (!cellList.includes(cellName)) {
                 cellList.push(cellName);
             }
             var geneArray = [];
 
-            for(var j = 1; j < keys.length; j++){
+            for (var j = 1; j < keys.length; j++) {
                 var expVal = parseFloat(data[i][keys[j]])
                 entry[keys[j]] = expVal;
                 geneArray.push(expVal);
-                if (i==1) {
+                if (i == 1) {
                     if (!geneList.includes(keys[j])) {
                         geneList.push(keys[j]);
                     }
@@ -121,24 +127,24 @@ function loadData(idx, data_filename, tsne_filename){
         //=====================================//
         // Get color scale for gene expression //
         //=====================================//
-        var maxExpression = d3.max(dataArray, function(d) {
-          return d3.max(d.geneExpressionArray);
+        var maxExpression = d3.max(dataArray, function (d) {
+            return d3.max(d.geneExpressionArray);
         });
-        var minExpression = d3.min(dataArray, function(d) {
-          return d3.min(d.geneExpressionArray);
+        var minExpression = d3.min(dataArray, function (d) {
+            return d3.min(d.geneExpressionArray);
         });
 
-        var meanExpression = d3.mean(dataArray, function(d){
+        var meanExpression = d3.mean(dataArray, function (d) {
             return d3.mean(d.geneExpressionArray)
         });
 
         var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([minExpression, maxExpression]);
-        
+
         allMinExp.push(minExpression);
         allMaxExp.push(maxExpression);
 
-        var nzArray = geneList.map(function(geneName) {
-            var count = d3.sum(dataArray, function(d) {
+        var nzArray = geneList.map(function (geneName) {
+            var count = d3.sum(dataArray, function (d) {
                 if (d[geneName] > 0) {
                     return 1;
                 }
@@ -146,10 +152,10 @@ function loadData(idx, data_filename, tsne_filename){
                     return 0;
                 }
             });
-            return {name: geneName, count: count};
+            return { name: geneName, count: count };
         });
         //console.log(nzArray);
-        var sorted50 = nzArray.sort((a,b) => b.count-a.count).slice(0,50);
+        var sorted50 = nzArray.sort((a, b) => b.count - a.count).slice(0, 50);
         //console.log(sorted50);
 
         for (var _i = 0; _i < 50; _i++) {
@@ -160,14 +166,14 @@ function loadData(idx, data_filename, tsne_filename){
             }
         }
 
-        var minNonZero = d3.min(nzArray, function(d){return d.count;});
-        var meanNonZero = d3.mean(nzArray, function(d){return d.count;});
-        var maxNonZero = d3.max(nzArray, function(d){return d.count;});
+        var minNonZero = d3.min(nzArray, function (d) { return d.count; });
+        var meanNonZero = d3.mean(nzArray, function (d) { return d.count; });
+        var maxNonZero = d3.max(nzArray, function (d) { return d.count; });
 
         //====================//
         // Get TSNE positions //
         //====================//
-        
+
         /*
         var opt = {}
         opt.epsilon = 10; // epsilon is learning rate (10 = default)
@@ -187,24 +193,29 @@ function loadData(idx, data_filename, tsne_filename){
 
         //console.log(dataArray);
 
-        d3.csv(tsnePath).then(function(data_tsne) {
+        d3.csv(tsnePath).then(function (data_tsne) {
             for (var i = 0; i < dataArray.length; i++) {
-                dataArray[i].tsne = [ parseFloat(data_tsne[i].tSNE_1), parseFloat(data_tsne[i].tSNE_2) ];
+                dataArray[i].tsne = [parseFloat(data_tsne[i].tSNE_1), parseFloat(data_tsne[i].tSNE_2)];
             }
-            console.log(dataArray);
+            // console.log(dataArray);
 
             //================//
             // Create Cluster //
             //================//
-            var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
+            var xPosition = viewportMargin + (idx * (viewportWidth + viewportMargin))
             //console.log(idx, xPosition);
 
-            clusterArray.push(new Cluster(idx, xPosition, upperMargin, viewportWidth, viewportHeight, colorScale, dataArray, selectFn=selectedCells));
+            clusterArray.push(new Cluster(idx, xPosition, upperMargin, viewportWidth, viewportHeight, colorScale, dataArray, selectFn = selectedCells));
 
-            var hm = new Heatmap(idx, xPosition, upperMargin+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
-            hm.setGenes(topCountGenes.slice(0,8));
-            heatmapArray[idx] = hm;
+            /* Heatmap Code commented to add Balloon Plot Code */
+            // var hm = new Heatmap(idx, xPosition, upperMargin+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
+            // hm.setGenes(topCountGenes.slice(0,8));
+            // heatmapArray[idx] = hm;
 
+            /* For Balloon Plot */
+            var bp = new Balloon(idx, xPosition, upperMargin + (viewportHeight + viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn = selectGeneInCluster);
+            balloonPlotArray[idx] = bp;
+            /* End */
             // Check to see if loading is finished
             loaded[idx] = true;
             if (!loaded.includes(false)) {
@@ -212,17 +223,17 @@ function loadData(idx, data_filename, tsne_filename){
                 $('.selection').css("visibility", "visible");
 
                 //console.log(topCountGenes);
-                otherPlot = new OtherPlot(0, viewportMargin, upperMargin+(viewportHeight+viewportMargin)*2, (viewportWidth+viewportMargin)*allData.length-viewportMargin, viewportHeight, colorScale, allData, d3.min(allMinExp), d3.max(allMaxExp));
+                otherPlot = new OtherPlot(0, viewportMargin, upperMargin + (viewportHeight + viewportMargin) * 2, (viewportWidth + viewportMargin) * allData.length - viewportMargin, viewportHeight, colorScale, allData, d3.min(allMinExp), d3.max(allMaxExp));
                 //otherPlot.setGenes(geneList.slice(0, 4));
-                var myGeneList = topCountGenes.slice(0,2);
+                var myGeneList = topCountGenes.slice(0, 2);
                 myGeneList.push(topCountGenes[30]);
                 myGeneList.push(topCountGenes[44]);
                 myGeneList.push(topCountGenes[48]);
                 //otherPlot.setGenes(myGeneList);
             }
-            
+
         });
-        
+
     });
 }
 
@@ -232,36 +243,50 @@ function selectGeneInCluster(geneName) {
     }
 }
 
-function selectedCells(cells, _idx){
+function selectedCells(cells, _idx) {
     if (cells.length < 11) {
-        heatmapArray[_idx].setCells(cells.map(function(d){return d.cell;}));
+        /* Heatmap Code commented to add Balloon Plot Code */
+        // heatmapArray[_idx].setCells(cells.map(function(d){return d.cell;}));
     }
     else {
-        heatmapArray[_idx].setCells(cells.slice(0,10).map(function(d){return d.cell;}));
+        /* Heatmap Code commented to add Balloon Plot Code */
+        // heatmapArray[_idx].setCells(cells.slice(0,10).map(function(d){return d.cell;}));
     }
-    otherPlot.setCells(cells.map(function(d){return d.cell;}), _idx);
+    otherPlot.setCells(cells.map(function (d) { return d.cell; }), _idx);
 }
 
-function cellDropdown(id, array){
-    $( "#"+id ).autocomplete({
+function cellDropdown(id, array) {
+    $("#" + id).autocomplete({
         source: array,
-        select: function( event, ui ) {
+        select: function (event, ui) {
             //c1.updateView(ui.item.value);
-            for (var i = 0; i < heatmapArray.length; i++) {
-                heatmapArray[i].addCell(ui.item.value);
-            }  
+            /* Heatmap Code commented to add Balloon Plot Code */
+            // for (var i = 0; i < heatmapArray.length; i++) {
+            // heatmapArray[i].addCell(ui.item.value);
+            // }
+            /* For Balloon Plot */
+            for (var i = 0; i < balloonPlotArray.length; i++) {
+                balloonPlotArray[i].addCell(ui.item.value);
+            }
+            /* End */
         }
     });
 }
 
-function geneDropdown(id, array){
-    $( "#"+id ).autocomplete({
+function geneDropdown(id, array) {
+    $("#" + id).autocomplete({
         source: array,
-        select: function( event, ui ) {
+        select: function (event, ui) {
             //c1.updateView(ui.item.value);
-            for (var i = 0; i < heatmapArray.length; i++) {
-                heatmapArray[i].addGene(ui.item.value);
+            /* Heatmap Code commented to add Balloon Plot Code */
+            // for (var i = 0; i < heatmapArray.length; i++) {
+            //     heatmapArray[i].addGene(ui.item.value);     
+            // }
+            /* For Balloon Plot */
+            for (var i = 0; i < balloonPlotArray.length; i++) {
+                balloonPlotArray[i].addGene(ui.item.value);
             }
+            /* End */
             otherPlot.addGene(ui.item.value);
         }
     });
