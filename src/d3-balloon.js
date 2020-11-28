@@ -118,6 +118,10 @@ function balloonplot(w, h, onClickFn = null) {
     // optional additional callback when a column/row axis should be shown/hidden
     var axisActionCallback = null;
 
+    /* Variable to save the gene names array */
+    var geneSet = []
+    /* End */
+
     // for toggled interactions used with touch input, this object records the current state
     var curToggle = {
         'id': null,         // action ID, e.g. "on_x_axis"
@@ -336,11 +340,9 @@ function balloonplot(w, h, onClickFn = null) {
                 })
                 /* Adding click event to pass gene name to cluster map*/
                 .on("click", function (d) {
-                    console.log(xAxis[0]);
-                    
-                    // if (onClickFn != null) {
-                    //     onClickFn(geneName);
-                    // }
+                    if (onClickFn != null) {
+                        onClickFn(geneSet[d[1]]);
+                    }
                 })
                 /* End */
                 .append("rect")
@@ -637,6 +639,7 @@ function balloonplot(w, h, onClickFn = null) {
         yAxis = axisFn(y);
 
         if (typeof (axisTickLabels) !== "undefined") {
+            geneSet = axisTickLabels;
             yAxis = setAxisTicks(yAxis, axisTickLabels);
         }
 

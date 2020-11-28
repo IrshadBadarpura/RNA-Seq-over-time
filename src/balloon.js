@@ -90,7 +90,8 @@ class Balloon {
                 .ease(d3.easeLinear);
 
             // create the balloon plot
-            var bplot = balloonplot(185, 110)
+            /* Passing the function reference from main.js to function */
+            var bplot = balloonplot(185, 110, onClickFn)
                 .position(20, 25)               // set the top-left offset
                 .transition(transition)         // enable transitions
                 .colorScale('y', yColor)        // set the row-wise colors
