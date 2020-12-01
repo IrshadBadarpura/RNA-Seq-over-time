@@ -83,7 +83,7 @@ geneDropdown('ddlGenes', geneList);
 cellDropdown('ddlCells', cellList);
 
 function loadData(idx, data_filename, tsne_filename){
-    var dataPath = "../data/1000x1000/" + data_filename + ".csv";
+    var dataPath = "../data/minmax/" + data_filename + ".csv";
     var tsnePath = "../data/tsne/" + tsne_filename + ".csv";
 
     d3.csv(dataPath).then(function(data) {
