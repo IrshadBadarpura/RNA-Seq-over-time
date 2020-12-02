@@ -128,11 +128,13 @@ function loadData(idx, data_filename, tsne_filename){
           return d3.min(d.geneExpressionArray);
         });
 
+
         var meanExpression = d3.mean(dataArray, function(d){
             return d3.mean(d.geneExpressionArray)
         });
 
         var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([minExpression, maxExpression]);
+        var cloudScale = d3.scaleSequential(d3.interpolateViridis).domain([minExpression * 200,maxExpression * 200]);
         
         allMinExp.push(minExpression);
         allMaxExp.push(maxExpression);
@@ -199,7 +201,7 @@ function loadData(idx, data_filename, tsne_filename){
             var xPosition = viewportMargin + (idx*(viewportWidth+viewportMargin))
             //console.log(idx, xPosition);
 
-            clusterArray.push(new Cluster(idx, xPosition, upperMargin, viewportWidth, viewportHeight, colorScale, dataArray, selectFn=selectedCells));
+            clusterArray.push(new Cluster(idx, xPosition, upperMargin, viewportWidth, viewportHeight, colorScale, cloudScale, dataArray, selectFn=selectedCells));
 
             var hm = new Heatmap(idx, xPosition, upperMargin+(viewportHeight+viewportMargin), viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
             hm.setGenes(topCountGenes.slice(0,8));
