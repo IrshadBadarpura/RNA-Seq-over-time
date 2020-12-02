@@ -59,13 +59,15 @@ $('#selectGene').css({
     'margin-top':0,
     position:'absolute'
 });
+
+/*
 $('#selectCell').css({
     top: 5,
     left: 400,
     'margin-left':0,
     'margin-top':0,
     position:'absolute'
-});
+});*/
 
 $('.selection').css("visibility", "hidden");
 $('#myTitle').text('Loading, please wait...');
@@ -77,7 +79,7 @@ for (var file_idx = 0; file_idx < filenames.length; file_idx++) {
 
 // set up the dropdowns
 geneDropdown('ddlGenes', geneList);
-cellDropdown('ddlCells', cellList);
+//cellDropdown('ddlCells', cellList);
 
 function loadData(idx, data_filename, tsne_filename){
     //var dataPath = "../data/normalized/" + data_filename + ".csv"; // Mean-centered normalization based on standard deviation.
@@ -132,6 +134,11 @@ function loadData(idx, data_filename, tsne_filename){
         });
 
         var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([minExpression, maxExpression]);
+        //var colorScale = d3.scaleLinear()
+        //    .domain([minExpression,minExpression+(maxExpression-minExpression)/2,maxExpression])
+        //    .range(['#2c7fb8', '#7fcdbb', '#ffffd9'])
+        //    .interpolate(d3.interpolateHcl); //interpolateHsl interpolateHcl interpolateRgb
+
         var cloudScale = d3.scaleSequential(d3.interpolateViridis).domain([minExpression * 200,maxExpression * 200]);
         
         allMinExp.push(minExpression);
@@ -256,7 +263,7 @@ function selectedCells(cells, _idx){
 
     otherPlot.setCells(cells.map(function(d){return d.cell;}), _idx);
 }
-
+/*
 function cellDropdown(id, array){
     $( "#"+id ).autocomplete({
         source: array,
@@ -267,7 +274,7 @@ function cellDropdown(id, array){
             }
         }
     });
-}
+}*/
 
 function geneDropdown(id, array){
     $( "#"+id ).autocomplete({
