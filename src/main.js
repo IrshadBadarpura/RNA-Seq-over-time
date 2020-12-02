@@ -201,7 +201,7 @@ function loadData(idx, data_filename, tsne_filename){
 
             clusterArray.push(new Cluster(idx, xPosition, upperMargin, viewportWidth, viewportHeight, colorScale, cloudScale, dataArray, selectFn=selectedCells));
 
-            var hm = new Heatmap(idx, xPosition, upperMargin+(viewportHeight+viewportMargin)*2, viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
+            var hm = new Heatmap(idx, xPosition, upperMargin+(viewportHeight+viewportMargin)*1, viewportWidth, viewportHeight, colorScale, dataArray, onClickFn=selectGeneInCluster);
             hm.setGenes(topCountGenes.slice(0,8));
             heatmapArray[idx] = hm;
 
@@ -212,7 +212,7 @@ function loadData(idx, data_filename, tsne_filename){
                 $('.selection').css("visibility", "visible");
 
                 //console.log(topCountGenes);
-                otherPlot = new OtherPlot(0, viewportMargin, upperMargin+(viewportHeight+viewportMargin)*3, (viewportWidth+viewportMargin)*allData.length-viewportMargin, viewportHeight, colorScale, allData, d3.min(allMinExp), d3.max(allMaxExp));
+                otherPlot = new OtherPlot(0, viewportMargin, upperMargin+(viewportHeight+viewportMargin)*2, (viewportWidth+viewportMargin)*allData.length-viewportMargin, viewportHeight, colorScale, allData, d3.min(allMinExp), d3.max(allMaxExp));
                 //otherPlot.setGenes(geneList.slice(0, 4));
                 var myGeneList = topCountGenes.slice(0,2);
                 myGeneList.push(topCountGenes[30]);
@@ -239,6 +239,16 @@ function selectedCells(cells, _idx){
     else {
         heatmapArray[_idx].setCells(cells.slice(0,10).map(function(d){return d.cell;}));
     }
+
+    for (var i = 0; i < filenames.length; i++) {
+        $(`#HeatmapSVG${i}`).css({
+            top: upperMargin+(viewportHeight+viewportMargin)*2,
+        });
+    }
+    $(`#otherPlot${0}`).css({
+        top: upperMargin+(viewportHeight+viewportMargin)*3,
+    });
+
     otherPlot.setCells(cells.map(function(d){return d.cell;}), _idx);
 }
 
