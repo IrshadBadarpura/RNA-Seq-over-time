@@ -82,7 +82,7 @@ class Balloon {
                 .style("fill", 'none');
 
             // set the color scale used in the rows
-            var yColor = d3.scaleOrdinal(d3.schemeCategory10);
+            // var yColor = d3.scaleOrdinal(d3.schemeCategory10);
 
             // set a transition for interactions
             var transition = d3.transition()
@@ -94,11 +94,11 @@ class Balloon {
             var bplot = balloonplot(185, 110, onClickFn)
                 .position(20, 25)               // set the top-left offset
                 .transition(transition)         // enable transitions
-                .colorScale('y', yColor)        // set the row-wise colors
+                .colorScale('y', colorScale)        // set the row-wise colors
                 .interactionOnElements(['circle', 'x', 'y'])   // enable interactions for mouseover/touch on circles and axes
                 .valueTextFmt(function (v) { return Math.round(v * 100) / 100; })   // custom value formatter
                 .data(balloonPlotData)                     // pass the data matrix
-                .xAxis(d3.axisTop, cellSet)     // enable the X axis and pass the tick labels
+                // .xAxis(d3.axisTop, cellSet)     // enable the X axis and pass the tick labels
                 .yAxis(d3.axisRight, geneSet)   // enable the Y axis and pass the tick labels
                 .legend('bottom', 3);           // legend below the plot with 3 sample circles (requires bplot.update() below)
 
