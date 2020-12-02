@@ -1,3 +1,9 @@
+//
+// Author: Christian Rivera
+// 
+// TODO: rename this class to "Timeline"
+//
+
 class OtherPlot {
   constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, allData, minExp, maxExp) {
     
@@ -347,7 +353,7 @@ class OtherPlot {
               tooltip.html(displayString)
               .style('opacity', .9)
               .style('left', (d3.event.pageX +10) + 'px')
-              .style('top', (d3.event.pageY +10) + 'px')
+              .style('top', (d3.event.pageY -100) + 'px')
               .style('border', '1px solid black')
               .raise();
             })
@@ -374,7 +380,7 @@ class OtherPlot {
               tooltip.html(displayString)
               .style('opacity', .9)
               .style('left', (d3.event.pageX +10) + 'px')
-              .style('top', (d3.event.pageY +10) + 'px')
+              .style('top', (d3.event.pageY -100) + 'px')
               .style('border', '1px solid black')
               .raise();
             })
