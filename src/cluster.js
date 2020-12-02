@@ -1,5 +1,5 @@
 class Cluster {
-  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, data, selectFn=null) {
+  constructor(svgid, offsetX, offsetY, svgWidth, svgHeight, colorScale, cloudScale, data, selectFn=null) {
 
     var borderWidth = 0.2;
     var borderColor = 'black';
@@ -128,7 +128,6 @@ class Cluster {
       var meanPopulation = d3.mean(data,function(d){ return d[selectedGeneName]; });
       var deviationPopulation = d3.deviation(data, function(d){ return d[selectedGeneName]; });
 
-
       var deviationcircle = d3.select(".demo")
                               .append("svg")
                               .attr("width", (windowWidth-viewportMargin)/2 +"px")
@@ -189,7 +188,7 @@ deviationcircle.append("path")
           .attr("transform", function(d) { return "translate(" + svgWidth *2/3 + "," + svgHeight*2/3 + ")"; });
 
 var color = "blue"
-var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 150 ;
+var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 10000 ;
 // var triangleSizeExpression = (deviationSelected + meanExpressionSelected) * 2000;
 
 
@@ -219,7 +218,7 @@ deviationcircle.append("path")
           })
 
   var color = "red"
-  var triangleSizeExpression = (meanExpressionSelected ) * 150;
+  var triangleSizeExpression = (meanExpressionSelected ) * 10000;
 
 
   var triangleExpression = d3.symbol()
@@ -262,7 +261,7 @@ deviationcircle.append("path")
           .attr("transform", function(d) { return "translate(" + svgWidth*4/3  + "," + svgHeight*2/3  + ")"; });
 
 var color = "blue"
-var triangleSizeExpressionP = (deviationPopulation + meanPopulation ) * 150 ;
+var triangleSizeExpressionP = (deviationPopulation + meanPopulation ) * 10000 ;
 
 
 var triangleExpressionP = d3.symbol()
@@ -291,7 +290,7 @@ deviationcircle.append("path")
           });
 
 var color = "red"
-var triangleSizeExpressionP = (meanPopulation) * 150;
+var triangleSizeExpressionP = (meanPopulation) * 10000;
 
 
 var triangleExpressionP = d3.symbol()
@@ -369,7 +368,7 @@ deviationcircle.append("g").append("text")
 var layout = d3.layout.cloud()
     .size([(windowWidth-viewportMargin)/2, viewportHeight])
     .words((Object.keys(cloudData)).map(function(d) {
-      return {text: d, size: 10 * cloudData[d]};
+      return {text: d, size: 100 * cloudData[d]};
     }))
     .padding(5)
     .rotate(function() { return 0; })
@@ -391,7 +390,7 @@ function draw(words) {
       .style("font-size", function(d) { return d.size + "px"; })
       .style("font-family", "Impact")
       .attr("text-anchor", "middle")
-      .style("fill",function(d){ return colorScale(d.size); })
+      .style("fill",function(d){ return cloudScale(d.size) })
       .attr("transform", function(d) {
         return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
       })
