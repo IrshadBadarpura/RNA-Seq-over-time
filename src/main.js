@@ -219,6 +219,11 @@ function loadData(idx, data_filename, tsne_filename){
                 myGeneList.push(topCountGenes[44]);
                 myGeneList.push(topCountGenes[48]);
                 //otherPlot.setGenes(myGeneList);
+
+                legend({
+                    color: colorScale,
+                    id: "heatmapLegend"
+                });
             }
             
         });

@@ -58,3 +58,8 @@
     pointer-events: none;
 }
 
+.legend{
+    position: absolute;
+    left: 680px;
+    top: -16px;
+}
