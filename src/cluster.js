@@ -73,6 +73,7 @@ class Cluster {
 
           // revert circles to initial style
           circles.attr("class", "dot");
+          circles.style('fill', function(d) { return colorScale(d[selectedGeneName]); } );
 
           var brush_coords = d3.brushSelection(this);
 
@@ -84,7 +85,8 @@ class Cluster {
 
                      return isBrushed(brush_coords, cx, cy);
                  })
-                 .attr("class", `dot brushed${svgid}`);
+                 .attr("class", `dot brushed${svgid}`)
+                 .style("fill","#f03b20");
             
             
         }
@@ -93,7 +95,7 @@ class Cluster {
 
         var triangle = document.getElementById("demo");
         triangle.querySelectorAll('*').forEach(n => n.remove());
-
+        
     } 
 
     function selected(){
