@@ -227,8 +227,11 @@ function loadData(idx, data_filename, tsne_filename){
                 myGeneList.push(topCountGenes[48]);
                 //otherPlot.setGenes(myGeneList);
 
+                $("#heatmapLegend").css("left", ((viewportWidth + viewportMargin) * 2) + viewportMargin);
+
                 legend({
                     color: colorScale,
+                    width: ((viewportWidth + viewportMargin) * 4) - viewportMargin,
                     id: "heatmapLegend"
                 });
             }
